@@ -7,8 +7,7 @@
  * - PrioritizeAllergensOutput - The return type for the prioritizeAllergens function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'genkit/zod'; // Zod can still be used for schema definition and type inference
 
 const PrioritizeAllergensInputSchema = z.object({
   identifiedAllergens: z
@@ -29,38 +28,28 @@ const PrioritizeAllergensOutputSchema = z.object({
 });
 export type PrioritizeAllergensOutput = z.infer<typeof PrioritizeAllergensOutputSchema>;
 
-export async function prioritizeAllergens(
+export function prioritizeAllergens( // Changed to synchronous and plain function
   input: PrioritizeAllergensInput
-): Promise<PrioritizeAllergensOutput> {
-  return prioritizeAllergensFlow(input);
+): PrioritizeAllergensOutput {
+  const {
+    identifiedAllergens,
+    userAllergies,
+  } = input;
+
+  // Prioritize allergens based on user profile
+  const prioritizedAllergens = identifiedAllergens.sort((a, b) => {
+    const aIsUserAllergy = userAllergies.includes(a.toLowerCase()); // Ensure case-insensitivity
+    const bIsUserAllergy = userAllergies.includes(b.toLowerCase()); // Ensure case-insensitivity
+
+    if (aIsUserAllergy && !bIsUserAllergy) {
+      return -1; // a comes first
+    } else if (!aIsUserAllergy && bIsUserAllergy) {
+      return 1; // b comes first
+    } else {
+      // If both are user allergies or neither are, sort alphabetically for consistency
+      return a.localeCompare(b);
+    }
+  });
+
+  return {prioritizedAllergens};
 }
-
-const prioritizeAllergensFlow = ai.defineFlow(
-  {
-    name: 'prioritizeAllergensFlow',
-    inputSchema: PrioritizeAllergensInputSchema,
-    outputSchema: PrioritizeAllergensOutputSchema,
-  },
-  async input => {
-    const {
-      identifiedAllergens,
-      userAllergies,
-    } = input;
-
-    // Prioritize allergens based on user profile
-    const prioritizedAllergens = identifiedAllergens.sort((a, b) => {
-      const aIsUserAllergy = userAllergies.includes(a);
-      const bIsUserAllergy = userAllergies.includes(b);
-
-      if (aIsUserAllergy && !bIsUserAllergy) {
-        return -1; // a comes first
-      } else if (!aIsUserAllergy && bIsUserAllergy) {
-        return 1; // b comes first
-      } else {
-        return 0; // no change in order
-      }
-    });
-
-    return {prioritizedAllergens};
-  }
-);
