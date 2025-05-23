@@ -1,6 +1,7 @@
+
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -21,7 +22,7 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
 
   if (identifiedAllergens.length === 0) {
     return (
-      <Card className="mt-6 shadow-lg">
+      <Card className="mt-6 shadow-lg animate-fadeIn">
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-green-500" />
@@ -93,16 +94,3 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
     </Card>
   );
 }
-
-// Add a simple fade-in animation
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-`;
-document.head.appendChild(style);
