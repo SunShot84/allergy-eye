@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -11,14 +12,17 @@ import type { UserProfile, ScanResultItem } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 
+const INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
+const INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
+
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Keep track of uploaded image for history
   const { toast } = useToast();
 
-  const [userProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, { knownAllergies: [] });
-  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, []);
+  const [userProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, INITIAL_USER_PROFILE);
+  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, INITIAL_SCAN_HISTORY);
 
   const handleImageUpload = async (file: File, dataUrl: string) => {
     setIsLoading(true);

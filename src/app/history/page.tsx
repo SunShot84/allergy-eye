@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -18,8 +19,10 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+const INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
+
 export default function HistoryPage() {
-  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, []);
+  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, INITIAL_SCAN_HISTORY);
   const [selectedItem, setSelectedItem] = useState<ScanResultItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

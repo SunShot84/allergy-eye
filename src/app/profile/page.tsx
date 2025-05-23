@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -8,10 +9,12 @@ import type { UserProfile } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck } from 'lucide-react';
 
+const INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
+
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useLocalStorage<UserProfile>(
     ALLERGY_PROFILE_STORAGE_KEY,
-    { knownAllergies: [] }
+    INITIAL_USER_PROFILE
   );
 
   const handleSaveProfile = (allergies: string[]) => {
