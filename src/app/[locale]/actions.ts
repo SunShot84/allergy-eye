@@ -11,7 +11,7 @@ import { getI18n } from '@/lib/i18n/server';
 interface OpenAIFoodAllergenInfo {
   allergen: string;
   confidence: number;
-  sourceFoodItem?: string; 
+  sourceFoodItem?: string;
 }
 interface OpenAIFoodAllergenIdentificationOutput {
   allergens: OpenAIFoodAllergenInfo[];
@@ -61,12 +61,12 @@ export async function analyzeFoodImage(
     const systemPromptInstruction = t('aiPrompt.systemInstruction', { locale: currentLocale });
     const jsonStructureInstruction = t('aiPrompt.jsonStructure', { locale: currentLocale });
     const userAllergyContextInstruction = t('aiPrompt.userAllergyContext', { knownAllergiesString, locale: currentLocale });
-    
+
     const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction}`;
     const userPromptText = t('aiPrompt.identifyRequest', { locale: currentLocale });
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo", 
+      model: "gpt-4.1-2025-04-14",
       response_format: { type: "json_object" },
       messages: [
         {
@@ -101,7 +101,7 @@ export async function analyzeFoodImage(
     } else {
       console.warn("OpenAI response content was null or empty for food image analysis.");
     }
-    
+
     const prioritizationInput: PrioritizeAllergensInput = {
       identifiedAllergens: identifiedAllergens.map(a => a.allergen),
       userAllergies: userKnownAllergiesArray,
@@ -144,12 +144,12 @@ export async function analyzeIngredientsListImage(
     const systemPromptInstruction = t('aiPrompt.ingredientsSystemInstruction', { locale: currentLocale });
     const jsonStructureInstruction = t('aiPrompt.ingredientsJsonStructure', { locale: currentLocale });
     const userAllergyContextInstruction = t('aiPrompt.ingredientsUserAllergyContext', { knownAllergiesString, locale: currentLocale });
-    
+
     const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction}`;
     const userPromptText = t('aiPrompt.ingredientsIdentifyRequest', { locale: currentLocale });
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo", // Vision model that can do OCR
+      model: "gpt-4.1-2025-04-14", // Vision model that can do OCR
       response_format: { type: "json_object" },
       messages: [
         {
@@ -185,7 +185,7 @@ export async function analyzeIngredientsListImage(
     } else {
       console.warn("OpenAI response content was null or empty for ingredients list analysis.");
     }
-    
+
     const prioritizationInput: PrioritizeAllergensInput = {
       identifiedAllergens: identifiedAllergens.map(a => a.allergen),
       userAllergies: userKnownAllergiesArray,
