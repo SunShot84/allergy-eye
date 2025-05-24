@@ -6,9 +6,9 @@ import zhTW from '@/locales/zh-TW';
 
 export const { getI18n, getScopedI18n, getCurrentLocale, getStaticParams } = createI18nServer(
   {
-    en: () => Promise.resolve(en),
-    'zh-CN': () => Promise.resolve(zhCN),
-    'zh-TW': () => Promise.resolve(zhTW),
+    en: () => Promise.resolve({ default: en }),
+    'zh-CN': () => Promise.resolve({ default: zhCN }),
+    'zh-TW': () => Promise.resolve({ default: zhTW }),
   },
   {
     // Explicitly set the default locale for the server-side functions
@@ -16,4 +16,3 @@ export const { getI18n, getScopedI18n, getCurrentLocale, getStaticParams } = cre
     defaultLocale: 'en',
   }
 );
-

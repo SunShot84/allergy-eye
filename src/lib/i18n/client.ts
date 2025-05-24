@@ -7,9 +7,8 @@ import zhTW from '@/locales/zh-TW';
 
 export const { useI18n, useScopedI18n, I18nProviderClient, useCurrentLocale, useChangeLocale } = createI18nClient(
   {
-    en: () => Promise.resolve(en),
-    'zh-CN': () => Promise.resolve(zhCN),
-    'zh-TW': () => Promise.resolve(zhTW),
+    en: () => Promise.resolve({ default: en }),
+    'zh-CN': () => Promise.resolve({ default: zhCN }),
+    'zh-TW': () => Promise.resolve({ default: zhTW }),
   }
 );
-
