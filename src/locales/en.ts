@@ -1,3 +1,4 @@
+
 export default {
   // General
   appName: 'AllergyEye',
@@ -87,6 +88,9 @@ export default {
     clearHistoryButton: 'Clear History',
     confirmDeleteItemTitle: 'Delete Scan?',
     confirmDeleteItemDescription: 'Are you sure you want to delete this scan from your history? This action cannot be undone.',
+    allergensFoundCount: '{count} allergens found',
+    includesYourAllergy: '(Includes your allergy!)',
+    scannedFoodAlt: 'Scanned food item',
   },
 
   // Global Metadata

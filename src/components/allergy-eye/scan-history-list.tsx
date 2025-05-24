@@ -43,7 +43,7 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
 
   if (historyItems.length === 0) {
     return (
-      <Card className="w-full max-w-2xl mx-auto shadow-lg">
+      <Card className="w-full max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold">{t('history.title')}</CardTitle>
         </CardHeader>
@@ -91,47 +91,65 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
             {historyItems.map(item => (
               <li key={item.id} className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="relative w-full sm:w-32 h-32 shrink-0 rounded-md overflow-hidden border">
+                  <div className="relative w-full sm:w-28 h-28 shrink-0 rounded-md overflow-hidden border">
                     <Image
                       src={item.imageDataUrl}
-                      alt="Scanned food item"
+                      alt={t('history.scannedFoodAlt') || "Scanned food item"}
                       layout="fill"
                       objectFit="cover"
                       data-ai-hint="food item"
                     />
                   </div>
-                  <div className="flex-grow">
+                  <div className="flex-grow min-w-0"> {/* min-w-0 helps flex truncation */}
                     <p className="text-sm text-muted-foreground mb-1">
                       {formatTimestampShort(item.timestamp)}
                     </p>
-                    <h3 className="font-semibold mb-2">{t('history.identifiedAllergens')}</h3>
+                    <h3 className="font-semibold mb-1">{t('history.identifiedAllergens')}</h3>
+                    
+                    {/* Mobile Allergen Summary */}
+                    <div className="sm:hidden mt-1">
+                      {item.identifiedAllergens.length > 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          {t('history.allergensFoundCount', { count: item.identifiedAllergens.length })}
+                          {item.userProfileAllergiesAtScanTime.some(ua => 
+                            item.identifiedAllergens.some(ia => ia.allergen.toLowerCase() === ua.toLowerCase())
+                          ) &&
+                            <span className="ml-1 text-destructive font-semibold">{t('history.includesYourAllergy')}</span>
+                          }
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">{t('history.noAllergensInScan')}</p>
+                      )}
+                    </div>
+
+                    {/* Desktop Allergen Badges */}
                     {item.identifiedAllergens.length > 0 ? (
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {item.identifiedAllergens.slice(0, 5).map(allergen => (
+                      <div className="hidden sm:flex flex-wrap gap-1.5 mt-1">
+                        {item.identifiedAllergens.slice(0, 4).map(allergen => (
                           <Badge
                             key={allergen.allergen}
                             variant={item.userProfileAllergiesAtScanTime.includes(allergen.allergen.toLowerCase()) ? "destructive" : "secondary"}
-                            className="capitalize"
+                            className="capitalize text-xs px-2 py-0.5" // Slightly smaller badges
                           >
                             <AlertTriangle className="h-3 w-3 mr-1" />
                             {allergen.allergen} ({Math.round(allergen.confidence * 100)}%)
                           </Badge>
                         ))}
-                        {item.identifiedAllergens.length > 5 && (
-                          <Badge variant="outline">{t('history.moreItems', { count: item.identifiedAllergens.length - 5 })}</Badge>
+                        {item.identifiedAllergens.length > 4 && (
+                          <Badge variant="outline" className="text-xs px-2 py-0.5">{t('history.moreItems', { count: item.identifiedAllergens.length - 4 })}</Badge>
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-muted-foreground">{t('history.noAllergensInScan')}</p>
+                      <p className="hidden sm:block text-sm text-muted-foreground mt-1">{t('history.noAllergensInScan')}</p>
                     )}
                   </div>
-                   <div className="flex flex-col sm:flex-row sm:items-start gap-2 shrink-0 mt-2 sm:mt-0">
-                      <Button variant="outline" size="sm" onClick={() => onViewItem(item)} className="w-full sm:w-auto">
+                   <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-2 shrink-0 mt-4 sm:mt-0 sm:ml-auto">
+                      <Button variant="outline" size="sm" onClick={() => onViewItem(item)} className="w-full sm:w-auto justify-center">
                         <Eye className="h-4 w-4 mr-2" /> {t('view')}
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                           <Button variant="ghost" size="sm" className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive">
+                           <Button variant="ghost" size="sm" className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive justify-center">
                             <Trash2 className="h-4 w-4 mr-2" /> {t('delete')}
                           </Button>
                         </AlertDialogTrigger>
@@ -158,3 +176,4 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
     </Card>
   );
 }
+

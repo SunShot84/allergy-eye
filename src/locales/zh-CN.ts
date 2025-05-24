@@ -1,3 +1,4 @@
+
 export default {
   // General
   appName: '过敏眼 AllergyEye',
@@ -87,6 +88,9 @@ export default {
     clearHistoryButton: '清除历史',
     confirmDeleteItemTitle: '删除扫描记录？',
     confirmDeleteItemDescription: '您确定要从历史记录中删除此扫描记录吗？此操作无法撤销。',
+    allergensFoundCount: '发现 {count} 个过敏原',
+    includesYourAllergy: '(包含您的过敏原!)',
+    scannedFoodAlt: '已扫描的食物图片',
   },
 
   // Global Metadata

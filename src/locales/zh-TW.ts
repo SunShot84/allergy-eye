@@ -1,3 +1,4 @@
+
 export default {
   // General
   appName: '過敏眼',
@@ -87,6 +88,9 @@ export default {
     clearHistoryButton: '清除歷史',
     confirmDeleteItemTitle: '刪除掃描記錄？',
     confirmDeleteItemDescription: '您確定要從歷史記錄中刪除此掃描記錄嗎？此操作無法撤銷。',
+    allergensFoundCount: '發現 {count} 個過敏原',
+    includesYourAllergy: '(包含您的過敏原!)',
+    scannedFoodAlt: '已掃描的食物圖片',
   },
   
   // Global Metadata

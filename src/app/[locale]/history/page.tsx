@@ -36,10 +36,15 @@ export default function HistoryPage() {
 
   const handleDeleteItem = (itemId: string) => {
     setScanHistory(prevHistory => prevHistory.filter(item => item.id !== itemId));
+    // Close modal if the deleted item was selected
+    if (selectedItem && selectedItem.id === itemId) {
+      closeModal();
+    }
   };
 
   const handleClearHistory = () => {
     setScanHistory([]);
+    closeModal(); // Close modal if open
   };
 
   const closeModal = () => {
@@ -72,12 +77,13 @@ export default function HistoryPage() {
                 {t('history.scanDetailsDescription', { timestamp: formatTimestamp(selectedItem.timestamp) })}
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="flex-grow pr-2 -mr-2">
+            {/* Ensure ScrollArea takes up available space and its content can indeed overflow */}
+            <ScrollArea className="flex-grow min-h-0"> {/* Added min-h-0 for better flex behavior */}
               <div className="space-y-4 py-4">
                 <div className="relative w-full h-64 rounded-md overflow-hidden border">
                   <Image
                     src={selectedItem.imageDataUrl}
-                    alt="Scanned food item"
+                    alt={t('history.scannedFoodAlt') || "Scanned food item"}
                     layout="fill"
                     objectFit="contain"
                     data-ai-hint="food item"
@@ -94,7 +100,7 @@ export default function HistoryPage() {
               </div>
             </ScrollArea>
              <DialogClose asChild>
-                <Button type="button" variant="outline" className="mt-4">
+                <Button type="button" variant="outline" className="mt-4 flex-shrink-0"> {/* Added flex-shrink-0 */}
                   {t('close')}
                 </Button>
               </DialogClose>
