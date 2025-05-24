@@ -1,6 +1,6 @@
 export default {
   // General
-  appName: '过敏眼',
+  appName: '过敏眼 AllergyEye',
   close: '关闭',
   delete: '删除',
   cancel: '取消',
