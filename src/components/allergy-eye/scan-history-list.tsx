@@ -1,7 +1,6 @@
-
 "use client";
 
-import React from 'react';
+import React, { useId } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
+import { getAllergenById } from '@/lib/allergens';
 
 interface ScanHistoryListProps {
   historyItems: ScanResultItem[];
@@ -28,6 +28,18 @@ interface ScanHistoryListProps {
   onDeleteItem: (itemId: string) => void;
   onClearHistory: () => void;
 }
+
+// Helper function to get allergen display name based on locale
+const getAllergenDisplayName = (allergenId: string, locale: string): string => {
+  const allergen = getAllergenById(allergenId);
+  if (!allergen) return allergenId; // Fallback to ID if allergen not found
+  
+  const langKey = locale.toLowerCase();
+  if (langKey === 'zh-cn' && allergen.name.sc?.length > 0) return allergen.name.sc[0];
+  if (langKey === 'zh-tw' && allergen.name.tc?.length > 0) return allergen.name.tc[0];
+  if (allergen.name.eng?.length > 0) return allergen.name.eng[0];
+  return allergen.id;
+};
 
 export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClearHistory }: ScanHistoryListProps) {
   const t = useI18n();
@@ -37,9 +49,8 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
     const date = new Date(timestamp);
     const dateString = new Intl.DateTimeFormat(currentLocale, { dateStyle: 'short' }).format(date);
     const timeString = new Intl.DateTimeFormat(currentLocale, { timeStyle: 'short' }).format(date);
-    return t('history.scannedOn', { date: dateString, time: timeString });
+    return t('history.scannedAt', { date: dateString, time: timeString });
   };
-
 
   if (historyItems.length === 0) {
     return (
@@ -110,37 +121,42 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
                     <div className="sm:hidden mt-1">
                       {item.identifiedAllergens.length > 0 ? (
                         <p className="text-sm text-muted-foreground">
-                          {t('history.allergensFoundCount', { count: item.identifiedAllergens.length })}
-                          {item.userProfileAllergiesAtScanTime.some(ua => 
-                            item.identifiedAllergens.some(ia => ia.allergen.toLowerCase() === ua.toLowerCase())
+                          {t('history.foundAllergensMobile', { count: item.identifiedAllergens.length })}
+                          {item.userProfileAllergiesAtScanTime.some(userAllergenId => 
+                            item.identifiedAllergens.some(ia => ia.allergenId === userAllergenId)
                           ) &&
-                            <span className="ml-1 text-destructive font-semibold">{t('history.includesYourAllergy')}</span>
+                            <span className="ml-1 text-destructive font-semibold">{t('history.includesYourAllergens')}</span>
                           }
                         </p>
                       ) : (
-                        <p className="text-sm text-muted-foreground">{t('history.noAllergensInScan')}</p>
+                        <p className="text-sm text-muted-foreground">{t('history.noAllergensFoundThisScan')}</p>
                       )}
                     </div>
 
                     {/* Desktop Allergen Badges */}
                     {item.identifiedAllergens.length > 0 ? (
                       <div className="hidden sm:flex flex-wrap gap-1.5 mt-1">
-                        {item.identifiedAllergens.slice(0, 4).map(allergen => (
-                          <Badge
-                            key={allergen.allergen}
-                            variant={item.userProfileAllergiesAtScanTime.includes(allergen.allergen.toLowerCase()) ? "destructive" : "secondary"}
-                            className="capitalize text-xs px-2 py-0.5" // Slightly smaller badges
-                          >
-                            <AlertTriangle className="h-3 w-3 mr-1" />
-                            {allergen.allergen} ({Math.round(allergen.confidence * 100)}%)
-                          </Badge>
-                        ))}
+                        {item.identifiedAllergens.slice(0, 4).map((allergen, index) => {
+                          const displayName = getAllergenDisplayName(allergen.allergenId, currentLocale);
+                          const isUserAllergy = item.userProfileAllergiesAtScanTime.includes(allergen.allergenId);
+                          
+                          return (
+                            <Badge
+                              key={`${item.id}-${allergen.allergenId}-${index}`}
+                              variant={isUserAllergy ? "destructive" : "secondary"}
+                              className="capitalize text-xs px-2 py-0.5" // Slightly smaller badges
+                            >
+                              <AlertTriangle className="h-3 w-3 mr-1" />
+                              {displayName} ({Math.round(allergen.confidence * 100)}%)
+                            </Badge>
+                          );
+                        })}
                         {item.identifiedAllergens.length > 4 && (
-                          <Badge variant="outline" className="text-xs px-2 py-0.5">{t('history.moreItems', { count: item.identifiedAllergens.length - 4 })}</Badge>
+                          <Badge variant="outline" className="text-xs px-2 py-0.5">{t('history.andMoreItems', { count: item.identifiedAllergens.length - 4 })}</Badge>
                         )}
                       </div>
                     ) : (
-                      <p className="hidden sm:block text-sm text-muted-foreground mt-1">{t('history.noAllergensInScan')}</p>
+                      <p className="hidden sm:block text-sm text-muted-foreground mt-1">{t('history.noAllergensFoundThisScan')}</p>
                     )}
                   </div>
                    <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-2 shrink-0 mt-4 sm:mt-0 sm:ml-auto">

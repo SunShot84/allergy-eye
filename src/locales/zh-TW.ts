@@ -1,4 +1,3 @@
-
 export default {
   // General
   appName: '過敏眼 AllergyEye',
@@ -83,6 +82,8 @@ export default {
     unknownSource: '來源: 未指定',
     extractedTextTitle: '提取的成分表文字：',
     addToProfile: '新增到檔案',
+    confidenceLabel: '置信度: {percentage}%',
+    sourceFoodItemLabel: '來源: {sourceFoodItem}',
   },
 
   // ProfilePage & ProfileForm
@@ -91,6 +92,7 @@ export default {
     description: '列出您已知的過敏原。這將有助於在掃描結果中優先顯示它們。',
     addAllergyLabel: '新增過敏原 (例如：花生、麩質、乳製品)',
     addAllergyPlaceholder: '輸入過敏原',
+    addAllergyPlaceholderMultiple: '輸入一個或多個過敏原 (例如：花生, 麩質, 乳製品)',
     currentAllergies: '您目前的過敏原:',
     noAllergiesYet: '您尚未新增任何過敏原。',
     saveProfileButton: '儲存檔案',
@@ -100,11 +102,29 @@ export default {
     allergyAlreadyAddedDesc: '"{allergy}" 已在您的清單中。',
     allergyAddedTitle: '過敏原已新增',
     allergyAddedDesc: '您可以在「過敏檔案」部分管理您的過敏原。',
+    multipleAllergiesAddedTitle: '已新增 {count} 個過敏原',
+    multipleAllergiesAddedDesc: '{count} 個新的過敏原已新增到您的檔案中。',
+    noNewAllergiesAddedTitle: '未新增新的過敏原',
+    allProcessedWereDuplicatesDesc: '所有處理的過敏原標籤均已在您的清單中或是輸入中的重複項。',
+    errorProcessingTags: '處理您的過敏原標籤時發生錯誤。請重試。',
+    processingButton: '處理中...',
     whyAddAllergiesTitle: '為何新增過敏原？',
     whyAddAllergiesInfo: "新增您已知的過敏原，有助於 過敏眼 為您提供個人化體驗：",
     whyAddAllergiesBenefit1: "優先警告：您敏感的過敏原將在掃描結果中更突顯。",
     whyAddAllergiesBenefit2: "客製化建議：未來功能可能會使用此資訊提供更具體的建議。",
-    privacyInfo: "您的隱私至關重要。此資訊儲存在您的裝置本地，不會被共享。"
+    privacyInfo: "您的隱私至關重要。此資訊儲存在您的裝置本地，不會被共享。",
+    uploadReportPlaceholder: "上傳過敏檢測報告圖片",
+    importFromReportButton: "從報告匯入",
+    importingReportButton: "正在匯入...",
+    chooseReportImageLabel: "選擇報告圖片",
+    reportImportSuccessTitle: "報告匯入成功",
+    reportImportSuccessDesc: "從報告中識別並新增了 {count} 個過敏原。",
+    reportImportNoNewAllergensTitle: "報告中未發現新過敏原",
+    reportImportNoNewAllergensDesc: "從報告中識別的過敏原已在您的清單中，或未找到新的過敏原。",
+    reportImportErrorTitle: "報告匯入失敗",
+    reportImportErrorDesc: "無法處理過敏報告圖片。請重試。",
+    tagProcessingSystemInstruction: "您是一個處理使用者輸入的過敏原標籤的AI助理。您的任務是接收一個可能包含多個逗號或空格分隔的過敏原標籤的字串，將其分割成獨立的標籤，並對每個標籤進行標準化處理。重要提示：請僅處理和返回與食物相關的過敏原標籤。排除任何非食物類過敏原，例如花粉、塵螨、貓毛、特定藥物（除非它們通常作為食物成分出現，例如某些添加劑）。對每個有效的食物過敏原標籤進行標準化（例如，糾正常見拼寫錯誤，轉換為標準的單數形式，去除多餘空格）。請返回一個JSON物件，其中包含一個名為 'processedTags' 的鍵，其值為一個包含這些處理後的、與食物相關的字串標籤的陣列。例如，如果輸入是 '花生, 貝類海鮮, 花粉, 雞蛋白, 貓毛'，輸出應類似於：{ \"processedTags\": [\"花生\", \"貝類海鮮\", \"蛋白\"] }。如果輸入為空或不包含可識別的食物相關標籤，則返回一個空陣列。",
+    tagProcessingUserMessage: "請處理以下過敏原標籤：{tags}",
   },
 
   // HistoryPage & ScanHistoryList Component
@@ -126,6 +146,11 @@ export default {
     allergensFoundCount: '發現 {count} 個過敏原',
     includesYourAllergy: '(包含您的過敏原!)',
     scannedFoodAlt: '已掃描的食物圖片',
+    scannedAt: '掃描於: {date} {time}',
+    foundAllergensMobile: '發現 {count} 種過敏原',
+    includesYourAllergens: '包含您的過敏原',
+    noAllergensFoundThisScan: '此次掃描未發現過敏原',
+    andMoreItems: '還有 {count} 項',
   },
   
   // Settings Page
@@ -142,15 +167,19 @@ export default {
 
   // AI Interaction Prompts
   aiPrompt: {
-    systemInstruction: "你是一個從圖片中識別食物潛在過敏原的人工智慧。請分析圖片。你的回答必須使用 {locale}。",
-    jsonStructure: "請以JSON物件格式回應，其中包含一个名為 'allergens' 的鍵。'allergens' 鍵對應一个物件陣列。陣列中的每个物件必須包含三个鍵：'allergen' (一个字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'乳製品')，'confidence' (一个0.0到1.0之間（含）的數字，表示你對此過敏原存在的可信度)，以及 'sourceFoodItem' (一个可選的字串，使用 {locale} 描述圖片中該過敏原的具體食物來源，例如：'餅乾'，'沙拉醬')。如果你在圖片中未識別到任何過敏原，'allergens' 陣列應為空。",
-    userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。對於每個識別出的過敏原，請在 'sourceFoodItem' 字段中指明其在圖片中的可能食物來源，並以 {locale} 進行描述。請進行全面分析，列出您可以從圖像中推斷出的所有*潛在*過敏原，即使它們的存在僅是疑似或不太確定。您的目標是盡可能詳盡地識別潛在風險。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。然而，你的主要任務是從圖片本身識別所有潛在的過敏原及其來源，並以 {locale} 列出過敏原名稱和來源描述。",
-    identifyRequest: "請識別此食物圖片中的過敏原。請用 {locale} 列出過敏原名稱。",
+    systemInstruction: "您是一個AI，用於從食物圖片中識別潛在的過敏原。分析圖像。您的回應必須是{locale}語言。",
+    jsonStructure: "請以JSON物件回應，其中包含一個名為 'allergens' 的鍵。'allergens' 鍵的值應該是一個物件陣列。此陣列中的每個物件必須包含三個鍵：'allergen' (一個字串，表示識別出的過敏原名稱，使用{locale}語言，例如：'花生'、'麩質'、'乳製品')，'confidence' (一個0.0到1.0之間的數字，包含0.0和1.0，表示您對該過敏原存在的信心度)，以及 'sourceFoodItem' (一個可選的字串，使用{locale}語言，描述圖片中作為此過敏原來源的具體食物，例如：'餅乾'、'沙拉醬')。如果您沒有識別出任何過敏原，'allergens' 陣列應為空。",
+    userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。對於每個識別出的過敏原，請在 'sourceFoodItem' 欄位中指明其在圖片中可能的來源食物，並用{locale}語言描述。請進行全面的分析。列出所有您能從圖片中推斷出的*潛在*過敏原，即使它們的存在只是疑似或不太確定。您的目標是盡可能詳盡地識別潛在風險。作為參考，使用者已知有這些過敏症（以其當前語言輸入）：{knownAllergiesString}。然而，您的主要任務是從圖片本身識別所有潛在的過敏原及其來源，用{locale}語言列出過敏原名稱和來源描述。",
+    identifyRequest: "請識別此食物圖片中的過敏原。請用{locale}語言列出過敏原名稱。",
 
-    ingredientsSystemInstruction: "您是一個人工智慧，負責從成分表圖片中提取文字，然後從提取的文字中識別潛在的過敏原。您的回答必須使用 {locale}。",
-    ingredientsJsonStructure: "請以JSON物件格式回應。此物件必須包含兩個鍵：'extractedText' (一個字串，包含您從成分表圖片中讀取到的所有文字) 和 'allergens' (一個物件陣列)。'allergens' 陣列中的每個物件必須包含三個鍵：'allergen' (一個字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'奶粉')，'confidence' (一個0.0到1.0之間（含）的數字，表示您根據文字判斷此過敏原存在的置信度)，以及 'sourceFoodItem' (一個字串，使用 {locale} 表示從提取文字中指示此過敏原的確切片語或成分，例如：'大豆卵磷脂'、'小麥粉')。如果未識別到過敏原，'allergens' 陣列應為空。如果無法提取到文字，'extractedText' 應為空字串，'allergens' 陣列也應為空。",
-    ingredientsUserAllergyContext: "首先，請準確地將提供的成分表圖片中的所有文字轉錄到 'extractedText' 欄位。然後，從這個 'extractedText' 中識別所有潛在的過敏原。對於每個識別出的過敏原，請在 'allergen' 欄位中提供其 {locale} 名稱，在 'confidence' 欄位中提供您的置信度，並在 'sourceFoodItem' 欄位中提供指示此過敏原的成分表中的確切文字片段（也使用 {locale}）。請列出您可以從文字中推斷出的所有*潛在*過敏原，即使它們的存在僅是疑似或不太確定。您的目標是盡可能詳盡。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。您的主要任務是分析提供的成分表圖片。",
-    ingredientsIdentifyRequest: "請從此成分表圖片中提取文字，並從文字中識別所有潛在的過敏原。請用 {locale} 列出過敏原名稱及其來源文字片段。",
+    ingredientsSystemInstruction: "您是一個AI，用於從成分表圖片中提取文字，然後從提取的文字中識別潛在的過敏原。您的回應必須是{locale}語言。",
+    ingredientsJsonStructure: "請以JSON物件回應。此物件必須包含兩個頂層鍵：'extractedText' (一個字串，包含從成分表中提取的所有文字，盡可能保留換行符) 和 'allergens' (一個物件陣列)。'allergens' 陣列中的每个物件必須包含三個鍵：'allergen' (一個字串，表示從提取文字中識別出的過敏原名稱，使用{locale}語言，例如：'花生'、'麩質'、'大豆')，'confidence' (一個0.0到1.0之間的數字，包含0.0和1.0，表示您根據文字判斷該過敏原存在的信心度)，以及 'sourceFoodItem' (一個字串，使用{locale}語言，應為 'extractedText' 中導致識別此過敏原的確切文字片段)。如果您未從文字中識別出任何過敏原，'allergens' 陣列應為空。如果未提取到任何文字，则 'extractedText' 應為空字串，'allergens' 也应為空阵列。",
+    ingredientsUserAllergyContext: "作為參考，使用者已知有這些過敏症（以其當前語言輸入）：{knownAllergiesString}。您的主要任務是提取所有文字，然後從文字本身識別所有潛在的過敏原，用{locale}語言列出過敏原名稱和來源片段。",
+    ingredientsIdentifyRequest: "請從此成分表圖片中提取文字並識別所有潛在的過敏原。請用{locale}語言列出過敏原名稱。",
+    tagProcessingSystemInstruction: "您是一個處理使用者輸入的過敏原標籤的AI助理。您的任務是接收一個可能包含多個逗號或空格分隔的過敏原標籤的字串，將其分割成獨立的標籤，並對每個標籤進行標準化處理。重要提示：請僅處理和返回與食物相關的過敏原標籤。排除任何非食物類過敏原，例如花粉、塵螨、貓毛、特定藥物（除非它們通常作為食物成分出現，例如某些添加劑）。對每個有效的食物過敏原標籤進行標準化（例如，糾正常見拼寫錯誤，轉換為標準的單數形式，去除多餘空格）。請返回一個JSON物件，其中包含一個名為 'processedTags' 的鍵，其值為一個包含這些處理後的、與食物相關的字串標籤的陣列。例如，如果輸入是 '花生, 貝類海鮮, 花粉, 雞蛋白, 貓毛'，輸出應類似於：{ \"processedTags\": [\"花生\", \"貝類海鮮\", \"蛋白\"] }。如果輸入為空或不包含可識別的食物相關標籤，則返回一個空陣列。",
+    tagProcessingUserMessage: "請處理以下過敏原標籤：{tags}",
+    reportAnalysisSystemInstruction: "您是一個專門分析醫療過敏檢測報告圖片的AI助理。您的主要任務是提取圖片中的所有文字，然後識別並僅列出檢測結果為陽性或表明過敏的過敏原名稱。請嚴格專注於報告上的印刷文字內容；忽略圖片上的任何手寫筆記、圈選、螢光標記或其他可能引起混淆的人為標記，因為這些標記可能會產生誤導。請對這些過敏原名稱進行標準化處理（例如，將'屋塵螨'處理為'塵螨'，將'雞蛋清'處理為'雞蛋清'，去除如'+'、'++'、'2級'、'陽性'等分級資訊）。請專注於常見的食物和環境過敏原。準確識別報告中（標準化處理後）的過敏原名稱至關重要。返回一個JSON物件，其中包含一個名為 'identifiedAllergensFromReport' 的鍵，其值為一個包含這些處理後的字串過敏原名稱的陣列。如果報告中沒有明確識別出陽性或指示過敏的過敏原，或者圖片不是可識別的過敏報告，則返回一個空陣列。",
+    reportAnalysisUserMessage: "請分析此過敏檢測報告圖片並提取已識別的過敏原。",
   },
   
   // Global Metadata
@@ -165,5 +194,9 @@ export default {
     en: 'English',
     zhCN: '简体中文',
     zhTW: '繁體中文',
+  },
+
+  error: {
+    genericError: '發生錯誤',
   },
 };

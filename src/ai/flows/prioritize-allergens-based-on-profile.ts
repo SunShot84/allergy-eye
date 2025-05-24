@@ -1,4 +1,3 @@
-
 /**
  * @fileOverview Prioritizes identified allergens based on the user's personal allergy profile.
  *
@@ -12,10 +11,10 @@ import {z} from 'zod'; // Changed from 'genkit/zod'
 const PrioritizeAllergensInputSchema = z.object({
   identifiedAllergens: z
     .array(z.string())
-    .describe('A list of allergens identified in the food image.'),
+    .describe('A list of allergen IDs identified in the food image.'),
   userAllergies: z
     .array(z.string())
-    .describe('A list of allergens the user is allergic to.'),
+    .describe('A list of allergen IDs the user is allergic to.'),
 });
 export type PrioritizeAllergensInput = z.infer<typeof PrioritizeAllergensInputSchema>;
 
@@ -23,7 +22,7 @@ const PrioritizeAllergensOutputSchema = z.object({
   prioritizedAllergens: z
     .array(z.string())
     .describe(
-      'A list of allergens, with those matching the userAllergies listed first.'
+      'A list of allergen IDs, with those matching the userAllergies listed first.'
     ),
 });
 export type PrioritizeAllergensOutput = z.infer<typeof PrioritizeAllergensOutputSchema>;
@@ -37,9 +36,10 @@ export function prioritizeAllergens(
   } = input;
 
   // Prioritize allergens based on user profile
+  // Since we're now working with standardized allergen IDs, we can do direct comparison
   const prioritizedAllergens = identifiedAllergens.sort((a, b) => {
-    const aIsUserAllergy = userAllergies.includes(a.toLowerCase()); // Ensure case-insensitivity
-    const bIsUserAllergy = userAllergies.includes(b.toLowerCase()); // Ensure case-insensitivity
+    const aIsUserAllergy = userAllergies.includes(a);
+    const bIsUserAllergy = userAllergies.includes(b);
 
     if (aIsUserAllergy && !bIsUserAllergy) {
       return -1; // a comes first

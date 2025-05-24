@@ -1,4 +1,3 @@
-
 export default {
   // General
   appName: 'AllergyEye',
@@ -83,6 +82,8 @@ export default {
     unknownSource: 'Source: Not specified',
     extractedTextTitle: 'Extracted Ingredients Text:',
     addToProfile: 'Add to profile',
+    confidenceLabel: 'Confidence: {percentage}%',
+    sourceFoodItemLabel: 'Source: {sourceFoodItem}',
   },
 
   // ProfilePage & ProfileForm
@@ -91,6 +92,7 @@ export default {
     description: 'List your known allergies. This will help prioritize them in scan results.',
     addAllergyLabel: 'Add an allergy (e.g., peanuts, gluten, dairy)',
     addAllergyPlaceholder: 'Enter an allergy',
+    addAllergyPlaceholderMultiple: 'Enter one or more allergies (e.g., peanuts, gluten, dairy)',
     currentAllergies: 'Your current allergies:',
     noAllergiesYet: "You haven't added any allergies yet.",
     saveProfileButton: 'Save Profile',
@@ -100,11 +102,27 @@ export default {
     allergyAlreadyAddedDesc: '"{allergy}" is already in your list.',
     allergyAddedTitle: 'Allergen Added',
     allergyAddedDesc: 'You can manage your allergies in the Profile section.',
+    multipleAllergiesAddedTitle: '{count} Allergens Added',
+    multipleAllergiesAddedDesc: '{count} new allergens have been added to your profile.',
+    noNewAllergiesAddedTitle: 'No New Allergens Added',
+    allProcessedWereDuplicatesDesc: 'All allergen tags processed were already in your list or were duplicates in the input.',
+    errorProcessingTags: 'There was an error trying to process your allergen tags. Please try again.',
+    processingButton: 'Processing...',
     whyAddAllergiesTitle: 'Why Add Allergies?',
     whyAddAllergiesInfo: "Adding your known allergies helps AllergyEye personalize your experience:",
     whyAddAllergiesBenefit1: "Prioritized Warnings: Allergens you're sensitive to will be highlighted more prominently in scan results.",
     whyAddAllergiesBenefit2: "Tailored Insights: Future features may use this information to provide more specific advice.",
-    privacyInfo: "Your privacy is important. This information is stored locally on your device and is not shared."
+    privacyInfo: "Your privacy is important. This information is stored locally on your device and is not shared.",
+    uploadReportPlaceholder: "Upload allergy test report image",
+    importFromReportButton: "Import from Report",
+    importingReportButton: "Importing...",
+    chooseReportImageLabel: "Choose Report Image",
+    reportImportSuccessTitle: "Report Import Successful",
+    reportImportSuccessDesc: "{count} allergens identified and added from the report.",
+    reportImportNoNewAllergensTitle: "No New Allergens from Report",
+    reportImportNoNewAllergensDesc: "Allergens identified from the report were already in your list or no new allergens were found.",
+    reportImportErrorTitle: "Report Import Failed",
+    reportImportErrorDesc: "Could not process the allergy report image. Please try again."
   },
 
   // HistoryPage & ScanHistoryList Component
@@ -126,6 +144,11 @@ export default {
     allergensFoundCount: '{count} allergens found',
     includesYourAllergy: '(Includes your allergy!)',
     scannedFoodAlt: 'Scanned food item',
+    scannedAt: 'Scanned at: {date} {time}',
+    foundAllergensMobile: 'Found {count} allergens',
+    includesYourAllergens: 'Includes your allergens',
+    noAllergensFoundThisScan: 'No allergens found in this scan',
+    andMoreItems: 'and {count} more',
   },
 
   // Settings Page
@@ -148,9 +171,13 @@ export default {
     identifyRequest: "Identify allergens in this food image. Please list allergen names in {locale}.",
 
     ingredientsSystemInstruction: "You are an AI that extracts text from an image of an ingredients list and then identifies potential allergens from that extracted text. Your response must be in {locale}.",
-    ingredientsJsonStructure: "Respond with a JSON object. This object must contain two keys: 'extractedText' (a string containing all the text you could read from the ingredients list image) and 'allergens' (an array of objects). Each object in the 'allergens' array must have three keys: 'allergen' (a string representing the name of the identified allergen in {locale}, e.g., 'Peanuts', 'Gluten', 'Milk Powder'), 'confidence' (a number between 0.0 and 1.0 inclusive, representing your confidence that this allergen is present based on the text), and 'sourceFoodItem' (a string in {locale}, representing the exact phrase or ingredient from the extracted text that indicates this allergen, e.g., 'Soy Lecithin', 'Wheat Flour'). If no allergens are identified, the 'allergens' array should be empty. If no text can be extracted, 'extractedText' should be an empty string and 'allergens' an empty array.",
-    ingredientsUserAllergyContext: "First, accurately transcribe all text from the provided image of an ingredients list into the 'extractedText' field. Then, from this 'extractedText', identify all potential allergens. For each identified allergen, provide its name in {locale} in the 'allergen' field, your confidence in the 'confidence' field, and the exact text snippet from the ingredients list that indicates this allergen in the 'sourceFoodItem' field (also in {locale}). List all *potential* allergens you can infer from the text, even if their presence is only suspected or less certain. Your goal is to be as exhaustive as possible. For context, the user has these known allergies (input in their current language): {knownAllergiesString}. Your primary task is to analyze the provided ingredients list image.",
-    ingredientsIdentifyRequest: "Please extract text from this ingredients list image and identify all potential allergens from the text. List allergen names and their source text snippets in {locale}.",
+    ingredientsJsonStructure: "Respond with a JSON object. This object must have two top-level keys: 'extractedText' (a string containing all the extracted text from the ingredients list, preserving line breaks if possible) and 'allergens' (an array of objects). Each object in the 'allergens' array must have three keys: 'allergen' (a string representing the name of the identified allergen in {locale} from the extracted text, e.g., 'Peanuts', 'Gluten', 'Soy'), 'confidence' (a number between 0.0 and 1.0 inclusive, representing your confidence that this allergen is present based on the text), and 'sourceFoodItem' (a string in {locale}, which should be the exact text snippet from the 'extractedText' that led to identifying this allergen). If you do not identify any allergens from the text, the 'allergens' array should be empty. If no text is extracted, both 'extractedText' should be an empty string and 'allergens' an empty array.",
+    ingredientsUserAllergyContext: "For context, the user has these known allergies (input in their current language): {knownAllergiesString}. Your primary task is to extract all text and then identify all potential allergens from the text itself, listing allergen names and source snippets in {locale}.",
+    ingredientsIdentifyRequest: "Extract ingredients text and identify allergens from this image. Please list allergen names in {locale}.",
+    tagProcessingSystemInstruction: "You are an AI assistant that processes user-inputted allergen tags. Your task is to take a single string of potentially multiple comma-separated or space-separated allergen tags, split them into individual tags, and normalize each tag. IMPORTANT: Only process and return tags that are FOOD-RELATED allergens. Exclude any non-food allergens such as pollen, dust mites, cat dander, specific medications unless they are typically found as food ingredients (e.g., certain additives). Normalize each valid food allergen tag (e.g., correct common misspellings, convert to a standard singular form, remove extra spaces). Respond with a JSON object containing a single key 'processedTags' which is an array of these processed, food-related string tags. For example, if the input is 'Peanut, shell fish, pollen, egg whites, cat hair', the output should be like: { \"processedTags\": [\"peanut\", \"shellfish\", \"egg white\"] }. If the input is empty or contains no recognizable food-related tags, return an empty array.",
+    tagProcessingUserMessage: "Please process the following allergen tags: {tags}",
+    reportAnalysisSystemInstruction: "You are an AI assistant specialized in analyzing images of medical allergy test reports. Your primary task is to extract all text from the image, then identify and list only the names of the allergens tested that are POSITIVE or INDICATE AN ALLERGY. Focus strictly on the printed text of the report; ignore any handwritten notes, circles, highlights, or other manual markings on the image, as these might be misleading. Standardize these allergen names (e.g., 'House Dust Mite' to 'dust mite', 'Egg White' to 'egg white', remove levels like '+', '++', 'class 2', 'positive'). Focus on common food and environmental allergens. It is crucial to accurately identify the allergen names as they appear in the report (after standardization). Respond with a JSON object containing a single key 'identifiedAllergensFromReport', which is an array of these processed string allergen names. If no allergens are clearly identified as positive or indicative of an allergy from the report, or if the image is not a recognizable allergy report, return an empty array.",
+    reportAnalysisUserMessage: "Please analyze this allergy test report image and extract the identified allergens.",
   },
 
   // Global Metadata
@@ -165,5 +192,16 @@ export default {
     en: 'English',
     zhCN: '简体中文',
     zhTW: '繁體中文',
+  },
+
+  // Error Messages
+  error: {
+    general: 'Something went wrong. Please try again.',
+    generalTitle: 'Error',
+    imageTooLarge: 'Image too large (max 5MB).',
+    unsupportedFormat: 'Unsupported image format. Use PNG, JPG, or WEBP.',
+    analysisError: 'Could not analyze image. Please ensure it is clear and try again.',
+    apiError: 'Could not connect to analysis service. Please check your internet connection or try again later.',
+    genericError: 'An Error Occurred',
   },
 };

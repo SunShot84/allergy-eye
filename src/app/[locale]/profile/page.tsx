@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -19,16 +18,11 @@ export default function ProfilePage() {
     ProfilePage_INITIAL_USER_PROFILE
   );
 
-  const handleSaveProfile = (allergies: string[]) => {
-    setUserProfile({ knownAllergies: allergies.map(a => a.toLowerCase()) });
-  };
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col items-center space-y-8">
         <ProfileForm 
           initialAllergies={userProfile.knownAllergies} 
-          onSave={handleSaveProfile} 
         />
         <Card className="w-full max-w-xl mx-auto bg-secondary/50 border-secondary">
           <CardHeader>

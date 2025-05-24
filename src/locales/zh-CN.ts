@@ -1,4 +1,3 @@
-
 export default {
   // General
   appName: '过敏眼 AllergyEye',
@@ -30,12 +29,12 @@ export default {
     howItWorksStep1: '1. 上传食物图片或拍照。',
     howItWorksStep2: '2. 我们的人工智能将分析图片以识别潜在的过敏原及其在食物中的来源。',
     howItWorksStep3: '3. 结果将显示过敏原、其来源和置信度。',
-    howItWorksStep4: '在“档案”部分添加您已知的过敏原，以个性化结果。',
+    howItWorksStep4: '在"档案"部分添加您已知的过敏原，以个性化结果。',
     howItWorksIngredientsTitle: '配料表扫描如何工作',
     howItWorksIngredientsStep1: "1. 上传清晰的产品配料表图片。",
     howItWorksIngredientsStep2: "2. 我们的人工智能将读取文本并识别列出的潜在过敏原。",
     howItWorksIngredientsStep3: "3. 结果将显示识别出的过敏原及其来源文本片段。",
-    howItWorksIngredientsStep4: "在“档案”中添加您已知的过敏原以个性化结果。",
+    howItWorksIngredientsStep4: '在"档案"中添加您已知的过敏原以个性化结果。',
     analysisCompleteTitle: '分析完成',
     analysisCompleteDescription: '已从图片中识别潜在的过敏原及其来源。',
     analysisFailedTitle: '分析失败',
@@ -83,6 +82,8 @@ export default {
     unknownSource: '来源: 未指定',
     extractedTextTitle: '提取的配料表文本:',
     addToProfile: '添加到档案',
+    confidenceLabel: '置信度: {percentage}%',
+    sourceFoodItemLabel: '来源: {sourceFoodItem}',
   },
 
   // ProfilePage & ProfileForm
@@ -91,6 +92,7 @@ export default {
     description: '列出您已知的过敏原。这将有助于在扫描结果中优先显示它们。',
     addAllergyLabel: '添加过敏原 (例如：花生、麸质、奶制品)',
     addAllergyPlaceholder: '输入过敏原',
+    addAllergyPlaceholderMultiple: '输入一个或多个过敏原 (例如：花生, 麸质, 奶制品)',
     currentAllergies: '您当前的过敏原:',
     noAllergiesYet: '您尚未添加任何过敏原。',
     saveProfileButton: '保存档案',
@@ -99,12 +101,30 @@ export default {
     allergyAlreadyAdded: '过敏原已添加',
     allergyAlreadyAddedDesc: '"{allergy}" 已在您的列表中。',
     allergyAddedTitle: '过敏原已添加',
-    allergyAddedDesc: '您可以在“过敏档案”部分管理您的过敏原。',
+    allergyAddedDesc: '您可以在"过敏档案"部分管理您的过敏原。',
+    multipleAllergiesAddedTitle: '已添加 {count} 个过敏原',
+    multipleAllergiesAddedDesc: '{count} 个新的过敏原已添加到您的档案中。',
+    noNewAllergiesAddedTitle: '未添加新的过敏原',
+    allProcessedWereDuplicatesDesc: '所有处理的过敏原标签均已在您的列表中或是输入中的重复项。',
+    errorProcessingTags: '处理您的过敏原标签时出错。请重试。',
+    processingButton: '处理中...',
     whyAddAllergiesTitle: '为何添加过敏原？',
     whyAddAllergiesInfo: "添加您已知的过敏原有助于 过敏眼 为您提供个性化体验：",
     whyAddAllergiesBenefit1: "优先警告：您敏感的过敏原将在扫描结果中更突出地显示。",
     whyAddAllergiesBenefit2: "定制化建议：未来功能可能会使用此信息提供更具体的建议。",
-    privacyInfo: "您的隐私至关重要。此信息存储在您的设备本地，不会被共享。"
+    privacyInfo: "您的隐私至关重要。此信息存储在您的设备本地，不会被共享。",
+    uploadReportPlaceholder: "上传过敏检测报告图片",
+    importFromReportButton: "从报告导入",
+    importingReportButton: "正在导入...",
+    chooseReportImageLabel: "选择报告图片",
+    reportImportSuccessTitle: "报告导入成功",
+    reportImportSuccessDesc: "从报告中识别并添加了 {count} 个过敏原。",
+    reportImportNoNewAllergensTitle: "报告中未发现新过敏原",
+    reportImportNoNewAllergensDesc: "从报告中识别的过敏原已在您的列表中，或未找到新的过敏原。",
+    reportImportErrorTitle: "报告导入失败",
+    reportImportErrorDesc: "无法处理过敏报告图片。请重试。",
+    tagProcessingSystemInstruction: "你是一个处理用户输入的过敏原标签的AI助手。你的任务是接收一个可能包含多个逗号或空格分隔的过敏原标签的字符串，将其分割成独立的标签，并对每个标签进行标准化处理。重要提示：请仅处理和返回与食物相关的过敏原标签。排除任何非食物类过敏原，例如花粉、尘螨、猫毛、特定药物（除非它们通常作为食物成分出现，例如某些添加剂）。对每个有效的食物过敏原标签进行标准化（例如，纠正常见拼写错误，转换为标准的单数形式，去除多余空格）。请返回一个JSON对象，其中包含一个名为 'processedTags' 的键，其值为一个包含这些处理后的、与食物相关的字符串标签的数组。例如，如果输入是 '花生, 贝类海鲜, 花粉, 鸡蛋白, 猫毛'，输出应类似于：{ \"processedTags\": [\"花生\", \"贝类海鲜\", \"蛋白\"] }。如果输入为空或不包含可识别的食物相关标签，则返回一个空数组。",
+    tagProcessingUserMessage: "请处理以下过敏原标签：{tags}",
   },
 
   // HistoryPage & ScanHistoryList Component
@@ -126,6 +146,11 @@ export default {
     allergensFoundCount: '发现 {count} 个过敏原',
     includesYourAllergy: '(包含您的过敏原!)',
     scannedFoodAlt: '已扫描的食物图片',
+    scannedAt: '扫描于: {date} {time}',
+    foundAllergensMobile: '发现 {count} 种过敏原',
+    includesYourAllergens: '包含您的过敏原',
+    noAllergensFoundThisScan: '此次扫描未发现过敏原',
+    andMoreItems: '还有 {count} 项',
   },
 
   // Settings Page
@@ -142,15 +167,19 @@ export default {
 
   // AI Interaction Prompts
   aiPrompt: {
-    systemInstruction: "你是一个从图片中识别食物潜在过敏原的人工智能。请分析图片。你的回答必须使用 {locale}。",
-    jsonStructure: "请以JSON对象格式回应，其中包含一个名为 'allergens' 的键。'allergens' 键对应一个对象数组。数组中的每个对象必须包含三个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用 {locale}，例如：'花生'、'麸质'、'乳制品')，'confidence' (一个0.0到1.0之间（含）的数字，表示你对此过敏原存在的置信度)，以及 'sourceFoodItem' (一个可选的字符串，使用 {locale} 描述图片中该过敏原的具体食物来源，例如：'饼干'，'沙拉酱')。如果你在图片中未识别到任何过敏原，'allergens' 数组应为空。",
-    userAllergyContext: "请仅关注图片中可见或强烈暗示的成分。对于每个识别出的过敏原，请在 'sourceFoodItem' 字段中指明其在图片中的可能食物来源，并以 {locale} 进行描述。请进行全面分析，列出您可以从图像中推断出的所有*潜在*过敏原，即使它们的存在只是疑似或不太确定。您的目标是尽可能详尽地识别潜在风险。作为参考，用户已知有以下过敏史（以其当前输入语言记录）：{knownAllergiesString}。然而，你的主要任务是从图片本身识别所有潜在的过敏原及其来源，并以 {locale} 列出过敏原名称和来源描述。",
-    identifyRequest: "请识别此食物图片中的过敏原。请用 {locale} 列出过敏原名称。",
+    systemInstruction: "你是一个AI，用于从食品图片中识别潜在的过敏原。分析图像。你的回答必须是{locale}语言。",
+    jsonStructure: "请以JSON对象回应，其中包含一个名为 'allergens' 的键。'allergens' 键的值应该是一个对象数组。此数组中的每个对象必须包含三个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用{locale}语言，例如：'花生'、'麸质'、'奶制品')，'confidence' (一个0.0到1.0之间的数字，包含0.0和1.0，表示你对该过敏原存在的置信度)，以及 'sourceFoodItem' (一个可选的字符串，使用{locale}语言，描述图片中作为此过敏原来源的具体食物，例如：'饼干'、'沙拉酱')。如果你没有识别出任何过敏原，'allergens' 数组应为空。",
+    userAllergyContext: "请仅关注图片中可见或强烈暗示的成分。对于每个识别出的过敏原，请在 'sourceFoodItem' 字段中指明其在图片中可能的来源食物，并用{locale}语言描述。请进行全面的分析。列出所有你能从图片中推断出的*潜在*过敏原，即使它们的存在只是疑似或不太确定。你的目标是尽可能详尽地识别潜在风险。作为参考，用户已知有这些过敏症（以其当前语言输入）：{knownAllergiesString}。然而，你的主要任务是从图片本身识别所有潜在的过敏原及其来源，用{locale}语言列出过敏原名称和来源描述。",
+    identifyRequest: "请识别此食物图片中的过敏原。请用{locale}语言列出过敏原名称。",
 
-    ingredientsSystemInstruction: "你是一个人工智能，负责从配料表图片中提取文本，然后从提取的文本中识别潜在的过敏原。你的回答必须使用 {locale}。",
-    ingredientsJsonStructure: "请以JSON对象格式回应。此对象必须包含两个键：'extractedText' (一个字符串，包含你从配料表图片中读取到的所有文本) 和 'allergens' (一个对象数组)。'allergens' 数组中的每个对象必须包含三个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用 {locale}，例如：'花生'、'麸质'、'奶粉')，'confidence' (一个0.0到1.0之间（含）的数字，表示你根据文本判断此过敏原存在的置信度)，以及 'sourceFoodItem' (一个字符串，使用 {locale} 表示从提取文本中指示此过敏原的确切短语或成分，例如：'大豆卵磷脂'、'小麦粉')。如果未识别到过敏原，'allergens' 数组应为空。如果无法提取到文本，'extractedText' 应为空字符串，'allergens' 数组也应为空。",
-    ingredientsUserAllergyContext: "首先，请准确地将提供的配料表图片中的所有文本转录到 'extractedText' 字段。然后，从这个 'extractedText' 中识别所有潜在的过敏原。对于每个识别出的过敏原，请在 'allergen' 字段中提供其 {locale} 名称，在 'confidence' 字段中提供你的置信度，并在 'sourceFoodItem' 字段中提供指示此过敏原的配料表中的确切文本片段（也使用 {locale}）。请列出您可以从文本中推断出的所有*潜在*过敏原，即使它们的存在只是疑似或不太确定。您的目标是尽可能详尽。作为参考，用户已知有以下过敏史（以其当前输入语言记录）：{knownAllergiesString}。您的主要任务是分析提供的配料表图片。",
-    ingredientsIdentifyRequest: "请从此配料表图片中提取文本，并从文本中识别所有潜在的过敏原。请用 {locale} 列出过敏原名称及其来源文本片段。",
+    ingredientsSystemInstruction: "你是一个AI，用于从配料表图片中提取文本，然后从提取的文本中识别潜在的过敏原。你的回答必须是{locale}语言。",
+    ingredientsJsonStructure: "请以JSON对象回应。此对象必须包含两个顶层键：'extractedText' (一个字符串，包含从配料表中提取的所有文本，尽可能保留换行符) 和 'allergens' (一个对象数组)。'allergens' 数组中的每个对象必须包含三个键：'allergen' (一个字符串，表示从提取文本中识别出的过敏原名称，使用{locale}语言，例如：'花生'、'麸质'、'大豆')，'confidence' (一个0.0到1.0之间的数字，包含0.0和1.0，表示你根据文本判断该过敏原存在的置信度)，以及 'sourceFoodItem' (一个字符串，使用{locale}语言，应为 'extractedText' 中导致识别此过敏原的确切文本片段)。如果你未从文本中识别出任何过敏原，'allergens' 数组应为空。如果未提取到任何文本，则 'extractedText' 应为空字符串，'allergens' 也应为空数组。",
+    ingredientsUserAllergyContext: "作为参考，用户已知有这些过敏症（以其当前语言输入）：{knownAllergiesString}。你的主要任务是提取所有文本，然后从文本本身识别所有潜在的过敏原，用{locale}语言列出过敏原名称和来源片段。",
+    ingredientsIdentifyRequest: "请从此配料表图片中提取文本并识别所有潜在的过敏原。请用{locale}语言列出过敏原名称。",
+    tagProcessingSystemInstruction: "你是一个处理用户输入的过敏原标签的AI助手。你的任务是接收一个可能包含多个逗号或空格分隔的过敏原标签的字符串，将其分割成独立的标签，并对每个标签进行标准化处理。重要提示：请仅处理和返回与食物相关的过敏原标签。排除任何非食物类过敏原，例如花粉、尘螨、猫毛、特定药物（除非它们通常作为食物成分出现，例如某些添加剂）。对每个有效的食物过敏原标签进行标准化（例如，纠正常见拼写错误，转换为标准的单数形式，去除多余空格）。请返回一个JSON对象，其中包含一个名为 'processedTags' 的键，其值为一个包含这些处理后的、与食物相关的字符串标签的数组。例如，如果输入是 '花生, 贝类海鲜, 花粉, 鸡蛋白, 猫毛'，输出应类似于：{ \"processedTags\": [\"花生\", \"贝类海鲜\", \"蛋白\"] }。如果输入为空或不包含可识别的食物相关标签，则返回一个空数组。",
+    tagProcessingUserMessage: "请处理以下过敏原标签：{tags}",
+    reportAnalysisSystemInstruction: "你是一个专门分析医疗过敏检测报告图片的AI助手。你的主要任务是提取图片中的所有文本，然后识别并仅列出检测结果为阳性或表明过敏的过敏原名称。请严格专注于报告上的打印文本内容；忽略图片上的任何手写笔记、圈点、高亮或其他可能引起混淆的人为标记，因为这些标记可能会产生误导。请对这些过敏原名称进行标准化处理（例如，将'屋尘螨'处理为'尘螨'，将'鸡蛋清'处理为'鸡蛋清'，去除如'+'、'++'、'2级'、'阳性'等分级信息）。请专注于常见的食物和环境过敏原。准确识别报告中（标准化处理后）的过敏原名称至关重要。返回一个JSON对象，其中包含一个名为 'identifiedAllergensFromReport' 的键，其值为一个包含这些处理后的字符串过敏原名称的数组。如果报告中没有明确识别出阳性或指示过敏的过敏原，或者图片不是可识别的过敏报告，则返回一个空数组。",
+    reportAnalysisUserMessage: "请分析此过敏检测报告图片并提取已识别的过敏原。",
   },
 
   // Global Metadata
@@ -165,5 +194,9 @@ export default {
     en: 'English',
     zhCN: '简体中文',
     zhTW: '繁體中文',
+  },
+
+  error: {
+    genericError: '发生错误',
   },
 };

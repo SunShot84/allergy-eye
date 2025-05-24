@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect } from 'react';
@@ -10,8 +9,10 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import type { UserProfile } from '@/lib/types';
-import { useI18n } from '@/lib/i18n/client';
+import { saveUserProfile } from '@/lib/profile-storage';
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getAllergenById } from '@/lib/allergens';
 
 interface AllergenResultsProps {
   analysisResult: AllergenAnalysisResult | null;
@@ -19,8 +20,21 @@ interface AllergenResultsProps {
   setUserProfile?: (value: UserProfile | ((val: UserProfile) => UserProfile)) => void;
 }
 
+// Helper function to get allergen display name based on locale
+const getAllergenDisplayName = (allergenId: string, locale: string): string => {
+  const allergen = getAllergenById(allergenId);
+  if (!allergen) return allergenId; // Fallback to ID if allergen not found
+  
+  const langKey = locale.toLowerCase();
+  if (langKey === 'zh-cn' && allergen.name.sc?.length > 0) return allergen.name.sc[0];
+  if (langKey === 'zh-tw' && allergen.name.tc?.length > 0) return allergen.name.tc[0];
+  if (allergen.name.eng?.length > 0) return allergen.name.eng[0];
+  return allergen.id;
+};
+
 export function AllergenResults({ analysisResult, userProfile, setUserProfile }: AllergenResultsProps) {
   const t = useI18n();
+  const currentLocale = useCurrentLocale();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,23 +47,32 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
 
   const { identifiedAllergens, prioritizedAllergens, extractedText } = analysisResult;
 
-  const handleAddAllergenToProfile = (allergenName: string) => {
+  const handleAddAllergenToProfile = (allergenId: string) => {
     if (!setUserProfile) return; 
 
-    const lowerCaseAllergen = allergenName.toLowerCase();
-    if (userProfile && !userProfile.knownAllergies.includes(lowerCaseAllergen)) {
+    // Check if allergen ID is already in user's profile
+    if (userProfile && userProfile.knownAllergies && !userProfile.knownAllergies.includes(allergenId)) {
       const updatedProfile: UserProfile = {
         ...userProfile,
-        knownAllergies: [...userProfile.knownAllergies, lowerCaseAllergen].sort(),
+        knownAllergies: [...userProfile.knownAllergies, allergenId].sort(),
       };
       setUserProfile(updatedProfile);
+      saveUserProfile(updatedProfile);
+      
+      const allergenDisplayName = getAllergenDisplayName(allergenId, currentLocale);
       toast({
         title: t('profile.allergyAddedTitle'),
         description: t('profile.allergyAddedDesc'),
       });
+    } else if (userProfile && userProfile.knownAllergies && userProfile.knownAllergies.includes(allergenId)) {
+      const allergenDisplayName = getAllergenDisplayName(allergenId, currentLocale);
+      toast({
+        variant: "default",
+        title: t('profile.allergyAlreadyAdded'),
+        description: t('profile.allergyAlreadyAddedDesc'),
+      });
     }
   };
-
 
   if (identifiedAllergens.length === 0 && !extractedText) {
     return (
@@ -94,12 +117,10 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
     );
   }
 
-
   const sortedAllergens = [...identifiedAllergens].sort((a, b) => {
-    // Prioritize allergens that match user's profile (already handled by prioritizedAllergens from backend if that was the intent)
-    // For client-side sorting to visually group them, or if prioritizedAllergens isn't fully exhaustive:
-    const aIsUserKnownAllergy = userProfile.knownAllergies.includes(a.allergen.toLowerCase());
-    const bIsUserKnownAllergy = userProfile.knownAllergies.includes(b.allergen.toLowerCase());
+    // Prioritize allergens that match user's profile using allergen IDs
+    const aIsUserKnownAllergy = userProfile.knownAllergies.includes(a.allergenId);
+    const bIsUserKnownAllergy = userProfile.knownAllergies.includes(b.allergenId);
   
     if (aIsUserKnownAllergy && !bIsUserKnownAllergy) return -1;
     if (!aIsUserKnownAllergy && bIsUserKnownAllergy) return 1;
@@ -108,8 +129,10 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
     if (b.confidence !== a.confidence) {
       return b.confidence - a.confidence;
     }
-    // Finally, sort alphabetically by allergen name
-    return a.allergen.localeCompare(b.allergen);
+    // Finally, sort alphabetically by allergen display name
+    const aDisplayName = getAllergenDisplayName(a.allergenId, currentLocale);
+    const bDisplayName = getAllergenDisplayName(b.allergenId, currentLocale);
+    return aDisplayName.localeCompare(bDisplayName);
   });
 
   return (
@@ -134,12 +157,13 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
         )}
         <ul className="space-y-4">
           {sortedAllergens.map((item, index) => {
-            const { allergen, confidence, sourceFoodItem } = item;
-            const isUserKnownAllergy = userProfile.knownAllergies.includes(allergen.toLowerCase());
+            const { allergenId, confidence, sourceFoodItem } = item;
+            const allergenDisplayName = getAllergenDisplayName(allergenId, currentLocale);
+            const isUserKnownAllergy = userProfile.knownAllergies.includes(allergenId);
             const confidencePercentage = Math.round(confidence * 100);
             return (
               <li
-                key={`${allergen}-${sourceFoodItem || 'nosource'}-${index}`} 
+                key={`${allergenId}-${sourceFoodItem || 'nosource'}-${index}`} 
                 className={`p-4 rounded-lg border ${
                   isUserKnownAllergy ? 'border-destructive bg-destructive/10' : 'border-border bg-card'
                 } transition-all duration-300 hover:shadow-md`}
@@ -148,7 +172,7 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
                   <div className="flex items-center gap-2">
                      <AlertTriangle className={`h-5 w-5 ${isUserKnownAllergy ? 'text-destructive' : 'text-amber-500'}`} />
                     <span className={`font-medium text-lg ${isUserKnownAllergy ? 'text-destructive' : 'text-foreground'}`}>
-                      {allergen}
+                      {allergenDisplayName}
                     </span>
                   </div>
                   {isUserKnownAllergy && (
@@ -156,14 +180,14 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>{t('allergenResults.confidence', { percentage: confidencePercentage })}</span>
+                  <span>{t('allergenResults.confidenceLabel', { percentage: confidencePercentage })}</span>
                 </div>
                 <Progress value={confidencePercentage} className={`h-2 mt-1 ${isUserKnownAllergy ? '[&>div]:bg-destructive' : ''}`} />
                 
                 {sourceFoodItem ? (
                   <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
                     <Info className="h-3 w-3 mt-0.5 shrink-0" />
-                    <span>{t('allergenResults.sourceLabel', { source: sourceFoodItem })}</span>
+                    <span>{t('allergenResults.sourceFoodItemLabel', { sourceFoodItem: sourceFoodItem })}</span>
                   </p>
                 ) : (
                   <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
@@ -181,7 +205,7 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
                     variant="outline"
                     size="sm"
                     className="mt-3 w-full sm:w-auto text-xs py-1 px-2 h-auto"
-                    onClick={() => handleAddAllergenToProfile(allergen)}
+                    onClick={() => handleAddAllergenToProfile(allergenId)}
                   >
                     <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
                     {t('allergenResults.addToProfile')}
