@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
@@ -27,16 +28,17 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-  params: { locale } 
+  params: { locale } // locale from params can be undefined here with 'rewrite' strategy
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
+  params: { locale: string }; // Type signature expects a string, but runtime can differ
 }>) {
-  const currentActualLocale = getCurrentLocale(); // Use this for lang attribute
+  const currentActualLocale = getCurrentLocale(); // This is the reliable locale from server context
   return (
     <html lang={currentActualLocale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <I18nProviderClient locale={locale}>
+        {/* Use currentActualLocale for the provider, not the potentially undefined 'locale' from params */}
+        <I18nProviderClient locale={currentActualLocale}>
           <AppLayout>
             {children}
           </AppLayout>
