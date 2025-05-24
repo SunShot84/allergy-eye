@@ -22,7 +22,7 @@ export default {
     uploadTitle: '上传食物图片',
     uploadDescription: '拍摄或选择食物图片以识别潜在的过敏原。',
     howItWorksTitle: '工作原理',
-    howItWorksStep1: '1. 上传食物图片。',
+    howItWorksStep1: '1. 上传食物图片或拍照。',
     howItWorksStep2: '2. 我们的人工智能将分析图片以识别潜在的过敏原。',
     howItWorksStep3: '3. 结果将显示过敏原和置信度。',
     howItWorksStep4: '在“档案”部分添加您已知的过敏原，以个性化结果。',
@@ -39,6 +39,23 @@ export default {
     invalidFileType: '文件类型无效',
     invalidFileTypeDesc: '请上传图片文件 (例如 JPG, PNG, WEBP)。',
     removeImage: '移除图片',
+
+    // Mode Switch and Camera Mode
+    currentMode: "当前模式: {mode}",
+    uploadModeLabel: "上传图片",
+    cameraModeLabel: "使用相机",
+    captureButton: "拍照",
+    cameraPermissionDeniedTitle: "相机访问被拒绝",
+    cameraPermissionDeniedDesc: "请在浏览器设置中启用相机权限以使用此功能。",
+    cameraAccessRequired: "需要相机访问权限",
+    cameraAccessRequiredDesc: "请允许访问相机以使用此功能。",
+    cameraInitializing: "正在初始化相机...",
+    noCameraDetected: "未检测到相机或权限被拒绝。",
+    imagePreview: "图片预览",
+    useThisPhotoButton: "使用这张照片",
+    retakePhotoButton: "重新拍摄",
+    allergensFoundCount: '发现 {count} 个过敏原',
+    includesYourAllergy: '(包含您的过敏原!)',
   },
 
   // AllergenResults Component

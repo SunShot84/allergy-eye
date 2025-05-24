@@ -22,7 +22,7 @@ export default {
     uploadTitle: '上傳食物圖片',
     uploadDescription: '拍攝或選擇食物圖片以識別潛在的過敏原。',
     howItWorksTitle: '運作方式',
-    howItWorksStep1: '1. 上傳食物圖片。',
+    howItWorksStep1: '1. 上傳食物圖片或拍照。',
     howItWorksStep2: '2. 我們的人工智慧將分析圖片以識別潛在的過敏原。',
     howItWorksStep3: '3. 結果將顯示過敏原和可信度。',
     howItWorksStep4: '在「檔案」部分新增您已知的過敏原，以個性化結果。',
@@ -39,6 +39,23 @@ export default {
     invalidFileType: '檔案類型無效',
     invalidFileTypeDesc: '請上傳圖片檔案 (例如 JPG, PNG, WEBP)。',
     removeImage: '移除圖片',
+    
+    // Mode Switch and Camera Mode
+    currentMode: "當前模式: {mode}",
+    uploadModeLabel: "上傳圖片",
+    cameraModeLabel: "使用相機",
+    captureButton: "拍照",
+    cameraPermissionDeniedTitle: "相機存取被拒",
+    cameraPermissionDeniedDesc: "請在瀏覽器設定中啟用相機權限以使用此功能。",
+    cameraAccessRequired: "需要相機存取權限",
+    cameraAccessRequiredDesc: "請允許存取相機以使用此功能。",
+    cameraInitializing: "正在初始化相機...",
+    noCameraDetected: "未偵測到相機或權限被拒絕。",
+    imagePreview: "圖片預覽",
+    useThisPhotoButton: "使用這張照片",
+    retakePhotoButton: "重新拍攝",
+    allergensFoundCount: '發現 {count} 個過敏原',
+    includesYourAllergy: '(包含您的過敏原!)',
   },
 
   // AllergenResults Component

@@ -22,7 +22,7 @@ export default {
     uploadTitle: 'Upload Food Image',
     uploadDescription: 'Take a picture or select an image of a food item to identify potential allergens.',
     howItWorksTitle: 'How it Works',
-    howItWorksStep1: '1. Upload an image of a food item.',
+    howItWorksStep1: '1. Upload an image or take a photo of a food item.',
     howItWorksStep2: '2. Our AI will analyze the image to identify potential allergens.',
     howItWorksStep3: '3. Results will show allergens and confidence levels.',
     howItWorksStep4: "Personalize results by adding your known allergies in the 'Profile' section.",
@@ -39,6 +39,23 @@ export default {
     invalidFileType: 'Invalid file type',
     invalidFileTypeDesc: 'Please upload an image file (e.g., JPG, PNG, WEBP).',
     removeImage: 'Remove image',
+
+    // Mode Switch and Camera Mode
+    currentMode: "Current Mode: {mode}",
+    uploadModeLabel: "Upload Image",
+    cameraModeLabel: "Use Camera",
+    captureButton: "Capture Photo",
+    cameraPermissionDeniedTitle: "Camera Access Denied",
+    cameraPermissionDeniedDesc: "Please enable camera permissions in your browser settings to use this feature.",
+    cameraAccessRequired: "Camera Access Required",
+    cameraAccessRequiredDesc: "Please allow camera access to use this feature.",
+    cameraInitializing: "Initializing Camera...",
+    noCameraDetected: "No camera detected or permission denied.",
+    imagePreview: "Image Preview",
+    useThisPhotoButton: "Use This Photo",
+    retakePhotoButton: "Retake Photo",
+    allergensFoundCount: '{count} allergens found',
+    includesYourAllergy: '(Includes your allergy!)',
   },
 
   // AllergenResults Component
