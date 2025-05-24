@@ -75,7 +75,7 @@ AllergyEye 是一款为易过敏人群，利用<b>视觉大模型</b>与<b>过�
 -   `npm run lint`: 运行 ESLint 代码检查。
 -   `npm run typecheck`: 运行 TypeScript 类型检查。
 
-### 如何添加或修改翻译？
+### 添加或修改翻译
 
 1.  打开对应的语言文件 (例如 `src/locales/en.ts`)。
 2.  找到您想修改的键值对，或添加新的键值对。
