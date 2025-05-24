@@ -125,6 +125,16 @@ export default {
     reportImportErrorDesc: "無法處理過敏報告圖片。請重試。",
     tagProcessingSystemInstruction: "您是一個處理使用者輸入的過敏原標籤的AI助理。您的任務是接收一個可能包含多個逗號或空格分隔的過敏原標籤的字串，將其分割成獨立的標籤，並對每個標籤進行標準化處理。重要提示：請僅處理和返回與食物相關的過敏原標籤。排除任何非食物類過敏原，例如花粉、塵螨、貓毛、特定藥物（除非它們通常作為食物成分出現，例如某些添加劑）。對每個有效的食物過敏原標籤進行標準化（例如，糾正常見拼寫錯誤，轉換為標準的單數形式，去除多餘空格）。請返回一個JSON物件，其中包含一個名為 'processedTags' 的鍵，其值為一個包含這些處理後的、與食物相關的字串標籤的陣列。例如，如果輸入是 '花生, 貝類海鮮, 花粉, 雞蛋白, 貓毛'，輸出應類似於：{ \"processedTags\": [\"花生\", \"貝類海鮮\", \"蛋白\"] }。如果輸入為空或不包含可識別的食物相關標籤，則返回一個空陣列。",
     tagProcessingUserMessage: "請處理以下過敏原標籤：{tags}",
+    allergenRemovedToastTitle: '已移除過敏原: {allergenName}',
+    allergenAddedToastTitle: '已新增過敏原: {allergenName}',
+    allergenRemovedToastDesc: '已成功從您的檔案中移除 {allergenName}。',
+    allergenAddedToastDesc: '已成功將 {allergenName} 新增到您的檔案中。',
+    reportImportSuccessDescWithCount: '成功匯入 {count} 個新過敏原: {allergenNames}',
+    reportImportNoAllergensFoundTitle: '報告中未發現過敏原',
+    reportImportNoAllergensFoundDesc: '匯入的報告未包含任何可識別的過敏原資訊。',
+    selectYourAllergensTitle: '選擇您的過敏原',
+    yourSelectedAllergensTitle: '您選擇的過敏原',
+    removeAllergenAriaLabel: '移除 {allergenName}',
   },
 
   // HistoryPage & ScanHistoryList Component

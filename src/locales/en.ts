@@ -122,7 +122,17 @@ export default {
     reportImportNoNewAllergensTitle: "No New Allergens from Report",
     reportImportNoNewAllergensDesc: "Allergens identified from the report were already in your list or no new allergens were found.",
     reportImportErrorTitle: "Report Import Failed",
-    reportImportErrorDesc: "Could not process the allergy report image. Please try again."
+    reportImportErrorDesc: "Could not process the allergy report image. Please try again.",
+    allergenRemovedToastTitle: 'Allergen Removed: {allergenName}',
+    allergenAddedToastTitle: 'Allergen Added: {allergenName}',
+    allergenRemovedToastDesc: 'Successfully removed {allergenName} from your profile.',
+    allergenAddedToastDesc: 'Successfully added {allergenName} to your profile.',
+    reportImportSuccessDescWithCount: 'Successfully imported {count} new allergen(s): {allergenNames}',
+    reportImportNoAllergensFoundTitle: 'No Allergens Found in Report',
+    reportImportNoAllergensFoundDesc: 'The imported report did not contain any recognizable allergen information.',
+    selectYourAllergensTitle: 'Select Your Allergens',
+    yourSelectedAllergensTitle: 'Your Selected Allergens',
+    removeAllergenAriaLabel: 'Remove {allergenName}',
   },
 
   // HistoryPage & ScanHistoryList Component

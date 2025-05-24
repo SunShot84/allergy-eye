@@ -125,6 +125,16 @@ export default {
     reportImportErrorDesc: "无法处理过敏报告图片。请重试。",
     tagProcessingSystemInstruction: "你是一个处理用户输入的过敏原标签的AI助手。你的任务是接收一个可能包含多个逗号或空格分隔的过敏原标签的字符串，将其分割成独立的标签，并对每个标签进行标准化处理。重要提示：请仅处理和返回与食物相关的过敏原标签。排除任何非食物类过敏原，例如花粉、尘螨、猫毛、特定药物（除非它们通常作为食物成分出现，例如某些添加剂）。对每个有效的食物过敏原标签进行标准化（例如，纠正常见拼写错误，转换为标准的单数形式，去除多余空格）。请返回一个JSON对象，其中包含一个名为 'processedTags' 的键，其值为一个包含这些处理后的、与食物相关的字符串标签的数组。例如，如果输入是 '花生, 贝类海鲜, 花粉, 鸡蛋白, 猫毛'，输出应类似于：{ \"processedTags\": [\"花生\", \"贝类海鲜\", \"蛋白\"] }。如果输入为空或不包含可识别的食物相关标签，则返回一个空数组。",
     tagProcessingUserMessage: "请处理以下过敏原标签：{tags}",
+    allergenRemovedToastTitle: '已移除过敏原: {allergenName}',
+    allergenAddedToastTitle: '已添加过敏原: {allergenName}',
+    allergenRemovedToastDesc: '已成功从您的档案中移除 {allergenName}。',
+    allergenAddedToastDesc: '已成功将 {allergenName} 添加到您的档案中。',
+    reportImportSuccessDescWithCount: '成功导入 {count} 个新过敏原: {allergenNames}',
+    reportImportNoAllergensFoundTitle: '报告中未发现过敏原',
+    reportImportNoAllergensFoundDesc: '导入的报告未包含任何可识别的过敏原信息。',
+    selectYourAllergensTitle: '选择您的过敏原',
+    yourSelectedAllergensTitle: '您选择的过敏原',
+    removeAllergenAriaLabel: '移除 {allergenName}',
   },
 
   // HistoryPage & ScanHistoryList Component

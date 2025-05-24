@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -53,8 +53,12 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
     const allergenInfo = getAllergenById(allergenId);
     const displayName = allergenInfo ? getAllergenDisplayName(allergenInfo, currentLocale) : allergenId;
     
-    const titleText = isCurrentlySelected ? `Allergen Removed: ${displayName}` : `Allergen Added: ${displayName}`;
-    const descriptionText = isCurrentlySelected ? `Successfully removed ${displayName} from your profile.` : `Successfully added ${displayName} to your profile.`;
+    const titleText = isCurrentlySelected 
+      ? t('profile.allergenRemovedToastTitle', { allergenName: displayName }) 
+      : t('profile.allergenAddedToastTitle', { allergenName: displayName });
+    const descriptionText = isCurrentlySelected 
+      ? t('profile.allergenRemovedToastDesc', { allergenName: displayName }) 
+      : t('profile.allergenAddedToastDesc', { allergenName: displayName });
 
     toast({
       title: titleText,
@@ -71,8 +75,8 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
     const allergenInfo = getAllergenById(allergyIdToRemove);
     const displayName = allergenInfo ? getAllergenDisplayName(allergenInfo, currentLocale) : allergyIdToRemove;
     toast({
-      title: `Allergen Removed: ${displayName}`,
-      description: `Successfully removed ${displayName} from your profile.`,
+      title: t('profile.allergenRemovedToastTitle', { allergenName: displayName }),
+      description: t('profile.allergenRemovedToastDesc', { allergenName: displayName }),
     });
   };
 
@@ -119,7 +123,7 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
           saveUserProfile(updatedProfile);
           toast({
             title: t('profile.reportImportSuccessTitle'),
-            description: `Successfully imported ${addedCount} new allergen(s): ${newlyAddedDisplayNames.join(', ')}`,
+            description: t('profile.reportImportSuccessDescWithCount', { count: addedCount, allergenNames: newlyAddedDisplayNames.join(', ') }),
           });
         } else if (extractedAllergenNames.length > 0) {
           toast({
@@ -128,8 +132,8 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
           });
         } else {
             toast({
-            title: "No Allergens Found in Report",
-            description: "The imported report did not contain any recognizable allergen information.",
+            title: t('profile.reportImportNoAllergensFoundTitle'),
+            description: t('profile.reportImportNoAllergensFoundDesc'),
           });
         }
       } catch (error) {
@@ -166,14 +170,14 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
       </CardHeader>
       <CardContent>
         <div className="mb-6">
-          <h3 className="text-lg font-medium mb-2">{"Select Your Allergens"}</h3>
+          <h3 className="text-lg font-medium mb-2">{t('profile.selectYourAllergensTitle')}</h3>
           <ScrollArea className="h-72 w-full rounded-md border p-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {availableAllergens.map((allergen) => {
+              {availableAllergens.map((allergen, index) => {
                 const displayName = getAllergenDisplayName(allergen, currentLocale);
                 const isSelected = profile.knownAllergies.includes(allergen.id);
                 return (
-                  <TooltipProvider key={allergen.id} delayDuration={300}>
+                  <TooltipProvider key={`available-allergen-item-${allergen.id}-${index}`} delayDuration={300}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -203,18 +207,18 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
 
         {profile.knownAllergies.length > 0 && (
           <div className="mb-6 pt-4 border-t">
-            <h3 className="text-lg font-medium mb-2">{"Your Selected Allergens"}</h3>
+            <h3 className="text-lg font-medium mb-2">{t('profile.yourSelectedAllergensTitle')}</h3>
             <div className="flex flex-wrap gap-2">
-              {profile.knownAllergies.map((id) => {
+              {profile.knownAllergies.map((id, index) => {
                 const allergenInfo = getAllergenById(id);
                 const displayName = allergenInfo ? getAllergenDisplayName(allergenInfo, currentLocale) : id;
                 return (
-                  <Badge key={id} variant="secondary" className="text-sm py-1 px-2">
+                  <Badge key={`selected-allergen-item-${id}-${index}`} variant="secondary" className="text-sm py-1 px-2">
                     {displayName}
                     <button
                       onClick={() => handleRemoveAllergy(id)}
                       className="ml-1.5 text-muted-foreground hover:text-destructive"
-                      aria-label={`Remove ${displayName}`}
+                      aria-label={t('profile.removeAllergenAriaLabel', { allergenName: displayName })}
                     >
                       <X className="h-3 w-3" />
                     </button>
