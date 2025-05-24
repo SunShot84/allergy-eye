@@ -26,19 +26,30 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default async function RootLayout({ // Made RootLayout async
+export default async function RootLayout({
   children,
-  params: { locale } // locale from params can be undefined here with 'rewrite' strategy
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string }; // Type signature expects a string, but runtime can differ
+  // params.locale is not explicitly used here anymore for the provider,
+  // getCurrentLocale() is more reliable with rewrite strategy.
+  params: { locale?: string };
 }>) {
-  const currentActualLocale = await getCurrentLocale(); // Await getCurrentLocale
+  let resolvedLocale = await getCurrentLocale();
+  const definedLocales = ['en', 'zh-CN', 'zh-TW'];
+
+  // Defensive check: Ensure resolvedLocale is one of the defined locales.
+  // getCurrentLocale() should already handle this by falling back to defaultLocale.
+  if (!definedLocales.includes(resolvedLocale)) {
+    console.warn(
+      `[RootLayout] getCurrentLocale() returned an unexpected locale '${resolvedLocale}'. Falling back to 'en'.`
+    );
+    resolvedLocale = 'en'; // Fallback to default locale
+  }
+
   return (
-    <html lang={currentActualLocale} suppressHydrationWarning>
+    <html lang={resolvedLocale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        {/* Use currentActualLocale for the provider, not the potentially undefined 'locale' from params */}
-        <I18nProviderClient locale={currentActualLocale}>
+        <I18nProviderClient locale={resolvedLocale}>
           <AppLayout>
             {children}
           </AppLayout>
