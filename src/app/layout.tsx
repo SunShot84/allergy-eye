@@ -48,7 +48,7 @@ export default async function RootLayout({
   return (
     <html lang={resolvedLocale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <I18nProviderClient locale={resolvedLocale}>
+        <I18nProviderClient locale={resolvedLocale} key={resolvedLocale}>
           <AppLayout>
             {children}
           </AppLayout>
