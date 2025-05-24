@@ -27,7 +27,7 @@ const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 const HomePage_INITIAL_DEV_MODE: DevPreferredMode = 'automatic';
 
-type OperatingMode = 'upload' | 'camera'; // For food scan
+type OperatingMode = 'upload' | 'camera'; 
 type ScanType = 'food' | 'ingredients';
 
 export default function HomePage() {
@@ -43,21 +43,23 @@ export default function HomePage() {
 
   const isMobile = useIsMobile();
   const [foodOperatingMode, setFoodOperatingMode] = useState<OperatingMode>('upload');
+  const [ingredientsOperatingMode, setIngredientsOperatingMode] = useState<OperatingMode>('upload');
   const [scanType, setScanType] = useState<ScanType>('food');
   const [clientSideReady, setClientSideReady] = useState(false);
 
   useEffect(() => {
     setClientSideReady(true);
-    if (scanType === 'food') {
-      if (devPreferredMode === 'force_camera') {
-        setFoodOperatingMode('camera');
-      } else if (devPreferredMode === 'force_upload') {
-        setFoodOperatingMode('upload');
-      } else { 
-        setFoodOperatingMode(isMobile ? 'camera' : 'upload');
-      }
+    let initialMode: OperatingMode = 'upload';
+    if (devPreferredMode === 'force_camera') {
+      initialMode = 'camera';
+    } else if (devPreferredMode === 'force_upload') {
+      initialMode = 'upload';
+    } else { // 'automatic'
+      initialMode = isMobile ? 'camera' : 'upload';
     }
-  }, [isMobile, devPreferredMode, scanType]);
+    setFoodOperatingMode(initialMode);
+    setIngredientsOperatingMode(initialMode);
+  }, [isMobile, devPreferredMode]);
 
 
   const processImageDataUrl = async (dataUrl: string, currentScanType: ScanType) => {
@@ -120,8 +122,17 @@ export default function HomePage() {
     processImageDataUrl(dataUrl, 'food');
   };
 
+  const handleIngredientsPhotoCaptured = (dataUrl: string) => {
+    processImageDataUrl(dataUrl, 'ingredients');
+  };
+
   const handleFoodModeChange = (newMode: OperatingMode) => {
     setFoodOperatingMode(newMode);
+    setAnalysisResult(null); // Clear results when changing mode
+  };
+
+  const handleIngredientsModeChange = (newMode: OperatingMode) => {
+    setIngredientsOperatingMode(newMode);
     setAnalysisResult(null); // Clear results when changing mode
   };
 
@@ -180,13 +191,28 @@ export default function HomePage() {
             )}
           </TabsContent>
           <TabsContent value="ingredients" className="mt-6">
-            <ImageUploader 
-              onImageUpload={handleIngredientsFileSelected} 
-              isLoading={isLoading && scanType === 'ingredients'}
-              uploaderTitle={ingredientsScanUploaderTitle}
-              uploaderDescription={ingredientsScanUploaderDescription}
-              imageAltText={t('home.uploadIngredientsTitle')}
-            />
+            {clientSideReady && (isMobile || devPreferredMode !== 'automatic') && (
+              <div className="mb-6 flex justify-center">
+                <ModeToggleSwitch
+                  currentMode={ingredientsOperatingMode}
+                  onModeChange={handleIngredientsModeChange}
+                />
+              </div>
+            )}
+            {ingredientsOperatingMode === 'upload' ? (
+              <ImageUploader 
+                onImageUpload={handleIngredientsFileSelected} 
+                isLoading={isLoading && scanType === 'ingredients'}
+                uploaderTitle={ingredientsScanUploaderTitle}
+                uploaderDescription={ingredientsScanUploaderDescription}
+                imageAltText={t('home.uploadIngredientsTitle')}
+              />
+            ) : (
+              <CameraModeUI 
+                onPhotoCaptured={handleIngredientsPhotoCaptured} 
+                isLoading={isLoading && scanType === 'ingredients'} 
+              />
+            )}
           </TabsContent>
         </Tabs>
         
@@ -217,3 +243,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+    
