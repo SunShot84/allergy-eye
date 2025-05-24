@@ -1,10 +1,14 @@
+
 import { createI18nServer } from 'next-international/server';
+import en from '@/locales/en';
+import zhCN from '@/locales/zh-CN';
+import zhTW from '@/locales/zh-TW';
 
 export const { getI18n, getScopedI18n, getCurrentLocale, getStaticParams } = createI18nServer(
   {
-    en: () => import('@/locales/en'),
-    'zh-CN': () => import('@/locales/zh-CN'),
-    'zh-TW': () => import('@/locales/zh-TW'),
+    en: () => Promise.resolve(en),
+    'zh-CN': () => Promise.resolve(zhCN),
+    'zh-TW': () => Promise.resolve(zhTW),
   },
   {
     // Explicitly set the default locale for the server-side functions
@@ -12,3 +16,4 @@ export const { getI18n, getScopedI18n, getCurrentLocale, getStaticParams } = cre
     defaultLocale: 'en',
   }
 );
+
