@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import Image from 'next/image';
 import { UploadCloud, XCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useI18n } from '@/lib/i18n/client';
 
 interface ImageUploaderProps {
   onImageUpload: (file: File, dataUrl: string) => void;
@@ -14,6 +15,7 @@ interface ImageUploaderProps {
 }
 
 export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) {
+  const { t } = useI18n();
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -24,16 +26,16 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
     if (file) {
       if (file.size > 5 * 1024 * 1024) { // 5MB limit
         toast({
-          title: "File too large",
-          description: "Please upload an image smaller than 5MB.",
+          title: t('home.fileTooLarge'),
+          description: t('home.fileTooLargeDesc'),
           variant: "destructive",
         });
         return;
       }
       if (!file.type.startsWith('image/')) {
         toast({
-          title: "Invalid file type",
-          description: "Please upload an image file (e.g., JPG, PNG, WEBP).",
+          title: t('home.invalidFileType'),
+          description: t('home.invalidFileTypeDesc'),
           variant: "destructive",
         });
         return;
@@ -48,16 +50,14 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
       };
       reader.readAsDataURL(file);
     }
-  }, [onImageUpload, toast]);
+  }, [onImageUpload, toast, t]);
 
   const handleRemoveImage = useCallback(() => {
     setPreview(null);
     setFileName(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset file input
+      fileInputRef.current.value = ''; 
     }
-    // Optionally, call a prop to clear results in parent component
-    // onImageRemove?.(); 
   }, []);
 
   const handleCardClick = () => {
@@ -71,14 +71,14 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
       className="w-full max-w-lg mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300"
       onClick={handleCardClick}
       role="button"
-      aria-label="Upload food image"
+      aria-label={t('home.uploadTitle')}
       tabIndex={preview ? -1 : 0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(); }}
     >
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center">Upload Food Image</CardTitle>
+        <CardTitle className="text-2xl font-semibold text-center">{t('home.uploadTitle')}</CardTitle>
         <CardDescription className="text-center">
-          Take a picture or select an image of a food item to identify potential allergens.
+          {t('home.uploadDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4 p-6">
@@ -86,17 +86,17 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
           {isLoading ? (
             <div className="flex flex-col items-center text-primary">
               <Loader2 className="h-12 w-12 animate-spin" />
-              <p className="mt-2 text-sm font-medium">Analyzing Image...</p>
+              <p className="mt-2 text-sm font-medium">{t('home.analyzing')}</p>
             </div>
           ) : preview ? (
             <>
-              <Image src={preview} alt="Food preview" layout="fill" objectFit="contain" className="rounded-md p-1" />
+              <Image src={preview} alt={t('home.uploadTitle')} layout="fill" objectFit="contain" className="rounded-md p-1" data-ai-hint="food preview" />
               <Button
                 variant="destructive"
                 size="icon"
                 className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full opacity-80 hover:opacity-100"
                 onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }}
-                aria-label="Remove image"
+                aria-label={t('home.removeImage')}
               >
                 <XCircle className="h-5 w-5" />
               </Button>
@@ -104,8 +104,8 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
           ) : (
             <div className="flex flex-col items-center text-muted-foreground pointer-events-none">
               <UploadCloud className="h-12 w-12" />
-              <p className="mt-2 text-sm font-medium">Click or drag & drop to upload</p>
-              <p className="text-xs">PNG, JPG, WEBP up to 5MB</p>
+              <p className="mt-2 text-sm font-medium">{t('home.clickOrDrag')}</p>
+              <p className="text-xs">{t('home.fileTypes')}</p>
             </div>
           )}
           <Input
@@ -114,12 +114,12 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
             accept="image/png, image/jpeg, image/webp"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             onChange={handleFileChange}
-            disabled={isLoading || !!preview} // Disable if loading or preview exists
+            disabled={isLoading || !!preview}
             aria-hidden="true" 
           />
         </div>
         {fileName && !isLoading && (
-          <p className="text-sm text-muted-foreground">Selected: {fileName}</p>
+          <p className="text-sm text-muted-foreground">{t('home.selectedFile', { fileName })}</p>
         )}
       </CardContent>
     </Card>

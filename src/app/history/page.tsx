@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -18,11 +17,14 @@ import {
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 
-const INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
+const HistoryPage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 
 export default function HistoryPage() {
-  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, INITIAL_SCAN_HISTORY);
+  const { t } = useI18n();
+  const currentLocale = useCurrentLocale();
+  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, HistoryPage_INITIAL_SCAN_HISTORY);
   const [selectedItem, setSelectedItem] = useState<ScanResultItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,6 +46,13 @@ export default function HistoryPage() {
     setSelectedItem(null);
   }
 
+  const formatTimestamp = (timestamp: number) => {
+    return new Intl.DateTimeFormat(currentLocale, {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    }).format(new Date(timestamp));
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <ScanHistoryList
@@ -57,12 +66,12 @@ export default function HistoryPage() {
         <Dialog open={isModalOpen} onOpenChange={(open) => { if(!open) closeModal(); else setIsModalOpen(true); }}>
           <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Scan Details</DialogTitle>
+              <DialogTitle className="text-2xl">{t('history.scanDetailsTitle')}</DialogTitle>
               <DialogDescription>
-                Details for scan from {new Date(selectedItem.timestamp).toLocaleString()}.
+                {t('history.scanDetailsDescription', { timestamp: formatTimestamp(selectedItem.timestamp) })}
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="flex-grow pr-2 -mr-2"> {/* Added negative margin to compensate for scrollbar */}
+            <ScrollArea className="flex-grow pr-2 -mr-2">
               <div className="space-y-4 py-4">
                 <div className="relative w-full h-64 rounded-md overflow-hidden border">
                   <Image
@@ -85,7 +94,7 @@ export default function HistoryPage() {
             </ScrollArea>
              <DialogClose asChild>
                 <Button type="button" variant="outline" className="mt-4">
-                  Close
+                  {t('close')}
                 </Button>
               </DialogClose>
           </DialogContent>

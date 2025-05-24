@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ImageUploader } from '@/components/allergy-eye/image-uploader';
 import { AllergenResults } from '@/components/allergy-eye/allergen-results';
 import { analyzeFoodImage, type AllergenAnalysisResult } from '@/app/actions';
@@ -9,31 +8,32 @@ import { useToast } from '@/hooks/use-toast';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { ALLERGY_PROFILE_STORAGE_KEY, SCAN_HISTORY_STORAGE_KEY, MAX_HISTORY_ITEMS } from '@/lib/constants';
 import type { UserProfile, ScanResultItem } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { useI18n } from '@/lib/i18n/client';
 
-const INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
-const INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
+const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
+const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 
 export default function HomePage() {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Keep track of uploaded image for history
+  // const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Keep track of uploaded image for history - removed as it's part of newHistoryItem
   const { toast } = useToast();
 
-  const [userProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, INITIAL_USER_PROFILE);
-  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, INITIAL_SCAN_HISTORY);
+  const [userProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, HomePage_INITIAL_USER_PROFILE);
+  const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, HomePage_INITIAL_SCAN_HISTORY);
 
   const handleImageUpload = async (file: File, dataUrl: string) => {
     setIsLoading(true);
     setAnalysisResult(null);
-    setUploadedImage(dataUrl); // Store for history saving
+    // setUploadedImage(dataUrl); // Store for history saving
 
     try {
       const result = await analyzeFoodImage(dataUrl, userProfile.knownAllergies);
       setAnalysisResult(result);
 
-      // Add to scan history
       const newHistoryItem: ScanResultItem = {
         id: new Date().toISOString() + '-' + Math.random().toString(36).substring(2,9),
         imageDataUrl: dataUrl,
@@ -50,15 +50,15 @@ export default function HomePage() {
       });
 
       toast({
-        title: "Analysis Complete",
-        description: "Potential allergens identified.",
+        title: t('home.analysisCompleteTitle'),
+        description: t('home.analysisCompleteDescription'),
       });
 
     } catch (error) {
       console.error("Error analyzing image:", error);
       toast({
-        title: "Analysis Failed",
-        description: "Could not analyze the image. Please try again.",
+        title: t('home.analysisFailedTitle'),
+        description: t('home.analysisFailedDescription'),
         variant: "destructive",
       });
       setAnalysisResult(null); 
@@ -84,14 +84,14 @@ export default function HomePage() {
             <CardHeader>
               <CardTitle className="flex items-center text-lg">
                 <AlertCircle className="h-5 w-5 mr-2 text-secondary-foreground" />
-                How it Works
+                {t('home.howItWorksTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-secondary-foreground space-y-2">
-              <p>1. Upload an image of a food item.</p>
-              <p>2. Our AI will analyze the image to identify potential allergens.</p>
-              <p>3. Results will show allergens and confidence levels.</p>
-              <p>Personalize results by adding your known allergies in the 'Profile' section.</p>
+              <p>{t('home.howItWorksStep1')}</p>
+              <p>{t('home.howItWorksStep2')}</p>
+              <p>{t('home.howItWorksStep3')}</p>
+              <p>{t('home.howItWorksStep4')}</p>
             </CardContent>
           </Card>
         )}

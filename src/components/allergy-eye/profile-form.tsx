@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { X, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useI18n } from '@/lib/i18n/client';
 
 interface ProfileFormProps {
   initialAllergies: string[];
@@ -14,6 +15,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
+  const { t } = useI18n();
   const [allergies, setAllergies] = useState<string[]>(initialAllergies);
   const [newAllergy, setNewAllergy] = useState('');
   const { toast } = useToast();
@@ -23,17 +25,18 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
   }, [initialAllergies]);
 
   const handleAddAllergy = useCallback(() => {
-    if (newAllergy.trim() && !allergies.includes(newAllergy.trim().toLowerCase())) {
-      setAllergies(prev => [...prev, newAllergy.trim().toLowerCase()]);
+    const trimmedAllergy = newAllergy.trim();
+    if (trimmedAllergy && !allergies.includes(trimmedAllergy.toLowerCase())) {
+      setAllergies(prev => [...prev, trimmedAllergy.toLowerCase()]);
       setNewAllergy('');
-    } else if (allergies.includes(newAllergy.trim().toLowerCase())) {
+    } else if (allergies.includes(trimmedAllergy.toLowerCase())) {
       toast({
-        title: "Allergy already added",
-        description: `"${newAllergy.trim()}" is already in your list.`,
+        title: t('profile.allergyAlreadyAdded'),
+        description: t('profile.allergyAlreadyAddedDesc', { allergy: trimmedAllergy }),
         variant: "default",
       });
     }
-  }, [newAllergy, allergies, toast]);
+  }, [newAllergy, allergies, toast, t]);
 
   const handleRemoveAllergy = useCallback((allergyToRemove: string) => {
     setAllergies(prev => prev.filter(allergy => allergy !== allergyToRemove));
@@ -43,24 +46,24 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
     event.preventDefault();
     onSave(allergies);
     toast({
-      title: "Profile Saved",
-      description: "Your allergy profile has been updated.",
+      title: t('profile.profileSavedTitle'),
+      description: t('profile.profileSavedDescription'),
     });
   };
 
   return (
     <Card className="w-full max-w-xl mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold">Your Allergy Profile</CardTitle>
+        <CardTitle className="text-2xl font-semibold">{t('profile.title')}</CardTitle>
         <CardDescription>
-          List your known allergies. This will help prioritize them in scan results.
+          {t('profile.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="new-allergy" className="block text-sm font-medium text-foreground">
-              Add an allergy (e.g., peanuts, gluten, dairy)
+              {t('profile.addAllergyLabel')}
             </label>
             <div className="flex gap-2">
               <Input
@@ -68,7 +71,7 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
                 type="text"
                 value={newAllergy}
                 onChange={(e) => setNewAllergy(e.target.value)}
-                placeholder="Enter an allergy"
+                placeholder={t('profile.addAllergyPlaceholder')}
                 className="flex-grow"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -78,14 +81,14 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
                 }}
               />
               <Button type="button" onClick={handleAddAllergy} variant="outline" className="shrink-0">
-                <PlusCircle className="h-4 w-4 mr-2" /> Add
+                <PlusCircle className="h-4 w-4 mr-2" /> {t('add')}
               </Button>
             </div>
           </div>
 
           {allergies.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-foreground">Your current allergies:</h3>
+              <h3 className="text-sm font-medium text-foreground">{t('profile.currentAllergies')}</h3>
               <div className="flex flex-wrap gap-2 p-3 border rounded-md bg-muted/30 min-h-[40px]">
                 {allergies.map(allergy => (
                   <Badge
@@ -98,7 +101,7 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
                       type="button"
                       onClick={() => handleRemoveAllergy(allergy)}
                       className="ml-2 rounded-full hover:bg-destructive/50 p-0.5"
-                      aria-label={`Remove ${allergy}`}
+                      aria-label={`${t('delete')} ${allergy}`}
                     >
                       <X className="h-3 w-3 text-destructive" />
                     </button>
@@ -108,11 +111,11 @@ export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
             </div>
           )}
           {allergies.length === 0 && (
-            <p className="text-sm text-muted-foreground">You haven't added any allergies yet.</p>
+            <p className="text-sm text-muted-foreground">{t('profile.noAllergiesYet')}</p>
           )}
 
           <Button type="submit" className="w-full">
-            Save Profile
+            {t('profile.saveProfileButton')}
           </Button>
         </form>
       </CardContent>

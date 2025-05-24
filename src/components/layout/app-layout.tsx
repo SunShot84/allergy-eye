@@ -11,13 +11,16 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button'; // Not used currently
 import { Separator } from '@/components/ui/separator';
 import { LogoIcon } from '@/components/icons/logo-icon';
 import { SidebarNav } from './sidebar-nav';
 import { Copyright } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/i18n/language-switcher';
+import { useI18n } from '@/lib/i18n/client';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
   return (
     <SidebarProvider defaultOpen >
       <Sidebar collapsible="icon">
@@ -25,7 +28,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
             <LogoIcon className="h-8 w-8 text-primary" />
             <span className="text-xl font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-              AllergyEye
+              {t('appName')}
             </span>
           </Link>
         </SidebarHeader>
@@ -37,7 +40,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarFooter className="p-4 group-data-[collapsible=icon]:hidden">
           <div className="flex items-center text-xs text-muted-foreground">
             <Copyright className="mr-1 h-3 w-3" />
-            <span>{new Date().getFullYear()} AllergyEye</span>
+            <span>{new Date().getFullYear()} {t('appName')}</span>
           </div>
         </SidebarFooter>
       </Sidebar>
@@ -49,7 +52,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1">
             {/* Placeholder for potential breadcrumbs or page title */}
           </div>
-          {/* Placeholder for user menu or actions */}
+          <LanguageSwitcher />
         </header>
         <main className="flex-1 p-4 sm:p-6 md:p-8">
           {children}

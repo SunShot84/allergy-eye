@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 
 interface ScanHistoryListProps {
   historyItems: ScanResultItem[];
@@ -28,15 +29,26 @@ interface ScanHistoryListProps {
 }
 
 export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClearHistory }: ScanHistoryListProps) {
+  const { t } = useI18n();
+  const currentLocale = useCurrentLocale();
+
+  const formatTimestampShort = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const dateString = new Intl.DateTimeFormat(currentLocale, { dateStyle: 'short' }).format(date);
+    const timeString = new Intl.DateTimeFormat(currentLocale, { timeStyle: 'short' }).format(date);
+    return t('history.scannedOn', { date: dateString, time: timeString });
+  };
+
+
   if (historyItems.length === 0) {
     return (
       <Card className="w-full max-w-2xl mx-auto shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold">Scan History</CardTitle>
+          <CardTitle className="text-2xl font-semibold">{t('history.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-center py-8">
-            You have no past scans. Start by analyzing a food image!
+            {t('history.noHistory')}
           </p>
         </CardContent>
       </Card>
@@ -47,26 +59,26 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
     <Card className="w-full max-w-3xl mx-auto shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle className="text-2xl font-semibold">Scan History</CardTitle>
-          <CardDescription>Review your past food allergen scans.</CardDescription>
+          <CardTitle className="text-2xl font-semibold">{t('history.title')}</CardTitle>
+          <CardDescription>{t('history.description')}</CardDescription>
         </div>
         {historyItems.length > 0 && (
            <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="sm">
-                <Trash2 className="h-4 w-4 mr-2" /> Clear All
+                <Trash2 className="h-4 w-4 mr-2" /> {t('clearAll')}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogTitle>{t('history.confirmClearAllTitle')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete all your scan history. This action cannot be undone.
+                  {t('history.confirmClearAllDescription')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={onClearHistory}>Clear History</AlertDialogAction>
+                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                <AlertDialogAction onClick={onClearHistory}>{t('history.clearHistoryButton')}</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -89,9 +101,9 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
                   </div>
                   <div className="flex-grow">
                     <p className="text-sm text-muted-foreground mb-1">
-                      Scanned on: {new Date(item.timestamp).toLocaleDateString()} at {new Date(item.timestamp).toLocaleTimeString()}
+                      {formatTimestampShort(item.timestamp)}
                     </p>
-                    <h3 className="font-semibold mb-2">Identified Allergens:</h3>
+                    <h3 className="font-semibold mb-2">{t('history.identifiedAllergens')}</h3>
                     {item.identifiedAllergens.length > 0 ? (
                       <div className="flex flex-wrap gap-2 mb-2">
                         {item.identifiedAllergens.slice(0, 5).map(allergen => (
@@ -105,33 +117,33 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
                           </Badge>
                         ))}
                         {item.identifiedAllergens.length > 5 && (
-                          <Badge variant="outline">+{item.identifiedAllergens.length - 5} more</Badge>
+                          <Badge variant="outline">{t('history.moreItems', { count: item.identifiedAllergens.length - 5 })}</Badge>
                         )}
                       </div>
                     ) : (
-                      <p className="text-sm text-muted-foreground">No allergens detected in this scan.</p>
+                      <p className="text-sm text-muted-foreground">{t('history.noAllergensInScan')}</p>
                     )}
                   </div>
                    <div className="flex flex-col sm:flex-row sm:items-start gap-2 shrink-0 mt-2 sm:mt-0">
                       <Button variant="outline" size="sm" onClick={() => onViewItem(item)} className="w-full sm:w-auto">
-                        <Eye className="h-4 w-4 mr-2" /> View
+                        <Eye className="h-4 w-4 mr-2" /> {t('view')}
                       </Button>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                            <Button variant="ghost" size="sm" className="w-full sm:w-auto text-destructive hover:bg-destructive/10 hover:text-destructive">
-                            <Trash2 className="h-4 w-4 mr-2" /> Delete
+                            <Trash2 className="h-4 w-4 mr-2" /> {t('delete')}
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Scan?</AlertDialogTitle>
+                            <AlertDialogTitle>{t('history.confirmDeleteItemTitle')}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to delete this scan from your history? This action cannot be undone.
+                              {t('history.confirmDeleteItemDescription')}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => onDeleteItem(item.id)}>Delete</AlertDialogAction>
+                            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => onDeleteItem(item.id)}>{t('delete')}</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>

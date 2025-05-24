@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -6,15 +5,17 @@ import { ProfileForm } from '@/components/allergy-eye/profile-form';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { ALLERGY_PROFILE_STORAGE_KEY } from '@/lib/constants';
 import type { UserProfile } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck } from 'lucide-react';
+import { useI18n } from '@/lib/i18n/client';
 
-const INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
+const ProfilePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 
 export default function ProfilePage() {
+  const { t } = useI18n();
   const [userProfile, setUserProfile] = useLocalStorage<UserProfile>(
     ALLERGY_PROFILE_STORAGE_KEY,
-    INITIAL_USER_PROFILE
+    ProfilePage_INITIAL_USER_PROFILE
   );
 
   const handleSaveProfile = (allergies: string[]) => {
@@ -32,16 +33,16 @@ export default function ProfilePage() {
           <CardHeader>
             <CardTitle className="flex items-center text-lg">
               <ShieldCheck className="h-5 w-5 mr-2 text-secondary-foreground" />
-              Why Add Allergies?
+              {t('profile.whyAddAllergiesTitle')}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-secondary-foreground space-y-2">
-            <p>Adding your known allergies helps AllergyEye personalize your experience:</p>
+            <p>{t('profile.whyAddAllergiesInfo')}</p>
             <ul className="list-disc list-inside space-y-1 pl-2">
-              <li><strong>Prioritized Warnings:</strong> Allergens you're sensitive to will be highlighted more prominently in scan results.</li>
-              <li><strong>Tailored Insights:</strong> Future features may use this information to provide more specific advice.</li>
+              <li>{t('profile.whyAddAllergiesBenefit1')}</li>
+              <li>{t('profile.whyAddAllergiesBenefit2')}</li>
             </ul>
-            <p className="font-medium">Your privacy is important. This information is stored locally on your device and is not shared.</p>
+            <p className="font-medium">{t('profile.privacyInfo')}</p>
           </CardContent>
         </Card>
       </div>

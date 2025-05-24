@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect } from 'react';
@@ -7,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 import type { AllergenAnalysisResult } from '@/app/actions';
 import { Progress } from '@/components/ui/progress';
+import { useI18n } from '@/lib/i18n/client';
 
 interface AllergenResultsProps {
   analysisResult: AllergenAnalysisResult | null;
@@ -14,6 +14,13 @@ interface AllergenResultsProps {
 }
 
 export function AllergenResults({ analysisResult, userProfileAllergies }: AllergenResultsProps) {
+  const { t } = useI18n();
+
+  useEffect(() => {
+    // The fadeIn animation is now handled by tailwind.config.ts and globals.css
+    // No client-side style injection needed here.
+  }, []);
+  
   if (!analysisResult) {
     return null;
   }
@@ -26,19 +33,18 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-green-500" />
-            No Allergens Detected
+            {t('allergenResults.noAllergensDetected')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Our analysis did not find any common allergens in the uploaded image. However, always double-check ingredients if you have severe allergies.
+            {t('allergenResults.noAllergensInfo')}
           </p>
         </CardContent>
       </Card>
     );
   }
 
-  // Sort allergens: prioritized first, then by confidence descending
   const sortedAllergens = [...identifiedAllergens].sort((a, b) => {
     const aIsPrioritized = prioritizedAllergens.includes(a.allergen);
     const bIsPrioritized = prioritizedAllergens.includes(b.allergen);
@@ -51,9 +57,9 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
   return (
     <Card className="mt-6 shadow-lg animate-fadeIn">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold">Allergen Analysis</CardTitle>
+        <CardTitle className="text-2xl font-semibold">{t('allergenResults.title')}</CardTitle>
         <CardDescription>
-          Potential allergens identified in the image. Allergens matching your profile are highlighted.
+          {t('allergenResults.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -76,15 +82,15 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
                     </span>
                   </div>
                   {isUserAllergy && (
-                    <Badge variant="destructive" className="text-xs">YOUR ALLERGY</Badge>
+                    <Badge variant="destructive" className="text-xs">{t('allergenResults.yourAllergyBadge')}</Badge>
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>Confidence: {confidencePercentage}%</span>
+                  <span>{t('allergenResults.confidence', { percentage: confidencePercentage })}</span>
                 </div>
                 <Progress value={confidencePercentage} className={`h-2 mt-1 ${isUserAllergy ? '[&>div]:bg-destructive' : ''}`} />
                 {confidence < 0.5 && !isUserAllergy && (
-                   <p className="text-xs text-muted-foreground mt-1">Low confidence. May not be present.</p>
+                   <p className="text-xs text-muted-foreground mt-1">{t('allergenResults.lowConfidenceInfo')}</p>
                 )}
               </li>
             );
