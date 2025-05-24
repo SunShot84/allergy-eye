@@ -26,14 +26,14 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({ // Made RootLayout async
   children,
   params: { locale } // locale from params can be undefined here with 'rewrite' strategy
 }: Readonly<{
   children: React.ReactNode;
   params: { locale: string }; // Type signature expects a string, but runtime can differ
 }>) {
-  const currentActualLocale = getCurrentLocale(); // This is the reliable locale from server context
+  const currentActualLocale = await getCurrentLocale(); // Await getCurrentLocale
   return (
     <html lang={currentActualLocale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
