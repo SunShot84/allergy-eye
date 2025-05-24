@@ -1,7 +1,6 @@
 
 # AllergyEye - 食物过敏原扫描应用
-
-AllergyEye 是一款使用现代 Web 技术构建的应用程序，旨在帮助用户通过上传食物图片来识别其中潜在的过敏原。它利用生成式 AI 分析图像，并结合用户的个人过敏档案，提供个性化的风险提示。
+AllergyEye 是一款为易过敏人群，利用<b>视觉大模型</b>与<b>过敏原数据库</b>，精准识别食物成分，帮助判断是否会引起过敏。它利用生成式 AI 分析图像，并结合用户的个人过敏档案，提供个性化的风险提示。
 
 ## 核心功能
 
@@ -17,8 +16,7 @@ AllergyEye 是一款使用现代 Web 技术构建的应用程序，旨在帮助�
 -   **UI 库**: [React](https://reactjs.org/)
 -   **UI 组件**: [ShadCN UI](https://ui.shadcn.com/)
 -   **样式**: [Tailwind CSS](https://tailwindcss.com/)
--   **AI 集成**: 直接使用 [OpenAI API](https://openai.com/product) (例如 GPT-4 Vision)
--   **国际化 (i18n)**: [next-international](https://github.com/QuiiBz/next-international) (支持英语, 简体中文, 繁体中文)
+-   **AI 集成**: 使用 [OpenAI API](https://openai.com/product) (GPT-4 turbo)
 -   **状态管理 (本地)**: `localStorage` (通过 `useLocalStorage` 钩子)
 -   **图标**: [Lucide React](https://lucide.dev/)
 -   **字体**: Geist Sans, Geist Mono
@@ -77,21 +75,12 @@ AllergyEye 是一款使用现代 Web 技术构建的应用程序，旨在帮助�
 -   `npm run lint`: 运行 ESLint 代码检查。
 -   `npm run typecheck`: 运行 TypeScript 类型检查。
 
-## 国际化 (i18n)
-
-本项目支持以下语言：
--   English (en) - 默认
--   简体中文 (zh-CN)
--   繁體中文 (zh-TW)
-
-用户可以通过应用界面右上角的语言切换器来选择语言。
-翻译文本位于 `src/locales/` 目录下，每个语言对应一个 `.ts` 文件 (例如 `en.ts`, `zh-CN.ts`)。
-
 ### 如何添加或修改翻译？
 
 1.  打开对应的语言文件 (例如 `src/locales/en.ts`)。
 2.  找到您想修改的键值对，或添加新的键值对。
 3.  确保所有语言文件都包含相同的键，以保证切换时不会出现文本缺失。
+
 
 ## 项目结构简介
 
@@ -129,7 +118,3 @@ AllergyEye/
 ## 贡献
 
 如果您有任何建议或发现 bug，请随时提出 Issue。
-
-## 许可证
-
-本项目采用 MIT 许可证。
