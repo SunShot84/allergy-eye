@@ -57,7 +57,7 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
     setPreview(null);
     setFileName(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; 
+      fileInputRef.current.value = '';
     }
   }, []);
 
@@ -68,7 +68,7 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
   };
 
   return (
-    <Card 
+    <Card
       className="w-full max-w-lg mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300"
       onClick={handleCardClick}
       role="button"
@@ -115,8 +115,9 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
             accept="image/png, image/jpeg, image/webp"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             onChange={handleFileChange}
+            onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to the Card
             disabled={isLoading || !!preview}
-            aria-hidden="true" 
+            aria-hidden="true"
           />
         </div>
         {fileName && !isLoading && (
