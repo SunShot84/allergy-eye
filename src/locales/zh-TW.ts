@@ -82,6 +82,7 @@ export default {
     sourceLabel: '來源: {source}',
     unknownSource: '來源: 未指定',
     extractedTextTitle: '提取的成分表文字：',
+    addToProfile: '新增到檔案',
   },
 
   // ProfilePage & ProfileForm
@@ -97,6 +98,8 @@ export default {
     profileSavedDescription: '您的過敏檔案已更新。',
     allergyAlreadyAdded: '過敏原已新增',
     allergyAlreadyAddedDesc: '"{allergy}" 已在您的清單中。',
+    allergyAddedTitle: '過敏原已新增',
+    allergyAddedDesc: '您可以在「過敏檔案」部分管理您的過敏原。',
     whyAddAllergiesTitle: '為何新增過敏原？',
     whyAddAllergiesInfo: "新增您已知的過敏原，有助於 過敏眼 為您提供個人化體驗：",
     whyAddAllergiesBenefit1: "優先警告：您敏感的過敏原將在掃描結果中更突顯。",

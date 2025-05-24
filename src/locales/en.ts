@@ -82,6 +82,7 @@ export default {
     sourceLabel: 'Source: {source}',
     unknownSource: 'Source: Not specified',
     extractedTextTitle: 'Extracted Ingredients Text:',
+    addToProfile: 'Add to profile',
   },
 
   // ProfilePage & ProfileForm
@@ -97,6 +98,8 @@ export default {
     profileSavedDescription: 'Your allergy profile has been updated.',
     allergyAlreadyAdded: 'Allergy already added',
     allergyAlreadyAddedDesc: '"{allergy}" is already in your list.',
+    allergyAddedTitle: 'Allergen Added',
+    allergyAddedDesc: 'You can manage your allergies in the Profile section.',
     whyAddAllergiesTitle: 'Why Add Allergies?',
     whyAddAllergiesInfo: "Adding your known allergies helps AllergyEye personalize your experience:",
     whyAddAllergiesBenefit1: "Prioritized Warnings: Allergens you're sensitive to will be highlighted more prominently in scan results.",

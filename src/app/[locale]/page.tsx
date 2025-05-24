@@ -37,7 +37,7 @@ export default function HomePage() {
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
   const { toast } = useToast();
 
-  const [userProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, HomePage_INITIAL_USER_PROFILE);
+  const [userProfile, setUserProfile] = useLocalStorage<UserProfile>(ALLERGY_PROFILE_STORAGE_KEY, HomePage_INITIAL_USER_PROFILE);
   const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, HomePage_INITIAL_SCAN_HISTORY);
   const [devPreferredMode] = useLocalStorage<DevPreferredMode>(DEV_PREFERRED_MODE_STORAGE_KEY, HomePage_INITIAL_DEV_MODE);
 
@@ -219,7 +219,8 @@ export default function HomePage() {
         {analysisResult && (
           <AllergenResults 
             analysisResult={analysisResult}
-            userProfileAllergies={userProfile.knownAllergies} 
+            userProfile={userProfile} 
+            setUserProfile={setUserProfile}
           />
         )}
 

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { ScanHistoryList } from '@/components/allergy-eye/scan-history-list';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { SCAN_HISTORY_STORAGE_KEY } from '@/lib/constants';
-import type { ScanResultItem } from '@/lib/types';
+import type { ScanResultItem, UserProfile } from '@/lib/types';
 import { AllergenResults } from '@/components/allergy-eye/allergen-results';
 import {
   Dialog,
@@ -94,8 +94,10 @@ export default function HistoryPage() {
                     identifiedAllergens: selectedItem.identifiedAllergens,
                     prioritizedAllergens: selectedItem.prioritizedAllergens,
                     foodDescription: selectedItem.foodDescription,
+                    extractedText: selectedItem.extractedText,
                   }}
-                  userProfileAllergies={selectedItem.userProfileAllergiesAtScanTime}
+                  userProfile={{ knownAllergies: selectedItem.userProfileAllergiesAtScanTime }}
+                  // setUserProfile is intentionally not passed here
                 />
               </div>
             </ScrollArea>

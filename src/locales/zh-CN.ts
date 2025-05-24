@@ -82,6 +82,7 @@ export default {
     sourceLabel: '来源: {source}',
     unknownSource: '来源: 未指定',
     extractedTextTitle: '提取的配料表文本:',
+    addToProfile: '添加到档案',
   },
 
   // ProfilePage & ProfileForm
@@ -97,6 +98,8 @@ export default {
     profileSavedDescription: '您的过敏档案已更新。',
     allergyAlreadyAdded: '过敏原已添加',
     allergyAlreadyAddedDesc: '"{allergy}" 已在您的列表中。',
+    allergyAddedTitle: '过敏原已添加',
+    allergyAddedDesc: '您可以在“过敏档案”部分管理您的过敏原。',
     whyAddAllergiesTitle: '为何添加过敏原？',
     whyAddAllergiesInfo: "添加您已知的过敏原有助于 过敏眼 为您提供个性化体验：",
     whyAddAllergiesBenefit1: "优先警告：您敏感的过敏原将在扫描结果中更突出地显示。",
