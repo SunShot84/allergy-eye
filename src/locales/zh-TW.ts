@@ -15,6 +15,7 @@ export default {
     scanFood: '掃描食物',
     scanHistory: '掃描歷史',
     allergyProfile: '過敏檔案',
+    settings: '設定', // New
   },
 
   // HomePage & ImageUploader
@@ -56,12 +57,14 @@ export default {
     retakePhotoButton: "重新拍攝",
     allergensFoundCount: '發現 {count} 個過敏原',
     includesYourAllergy: '(包含您的過敏原!)',
+    switchToUploadMode: '切換到上傳模式',
+    switchToCameraMode: '切換到相機模式',
   },
 
   // AllergenResults Component
   allergenResults: {
     title: '過敏原分析',
-    description: '圖片中識別出的潛在過敏原。與您檔案匹配的過敏原將被高亮顯示。',
+    description: '圖片中識別出的潛在過敏原。与您檔案匹配的過敏原將被高亮顯示。',
     noAllergensDetected: '未檢測到過敏原',
     noAllergensInfo: '我們的分析未在您上傳的圖片中發現任何常見的過敏原。但是，如果您有嚴重的過敏症，請務必仔細檢查成分。',
     yourAllergyBadge: '您的過敏原',
@@ -108,6 +111,18 @@ export default {
     allergensFoundCount: '發現 {count} 個過敏原',
     includesYourAllergy: '(包含您的過敏原!)',
     scannedFoodAlt: '已掃描的食物圖片',
+  },
+  
+  // Settings Page -- NEW
+  settings: {
+    title: '開發者設定',
+    description: '手動覆蓋應用程式行為以便測試。設定將本地儲存在您的瀏覽器中。',
+    operatingModeTitle: '操作模式覆蓋',
+    modeAutomatic: '自動 (行動裝置：相機，桌面裝置：上傳)',
+    modeForceCamera: '強制相機模式 (用於桌面裝置測試)',
+    modeForceUpload: '強制上傳模式',
+    settingsSaved: '設定已儲存！',
+    settingsSavedDesc: '您的偏好操作模式已更新。',
   },
   
   // Global Metadata

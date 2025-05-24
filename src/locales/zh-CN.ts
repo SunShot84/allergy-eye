@@ -15,6 +15,7 @@ export default {
     scanFood: '扫描食物',
     scanHistory: '扫描历史',
     allergyProfile: '过敏档案',
+    settings: '设置', // New
   },
 
   // HomePage & ImageUploader
@@ -56,6 +57,8 @@ export default {
     retakePhotoButton: "重新拍摄",
     allergensFoundCount: '发现 {count} 个过敏原',
     includesYourAllergy: '(包含您的过敏原!)',
+    switchToUploadMode: '切换到上传模式',
+    switchToCameraMode: '切换到相机模式',
   },
 
   // AllergenResults Component
@@ -108,6 +111,18 @@ export default {
     allergensFoundCount: '发现 {count} 个过敏原',
     includesYourAllergy: '(包含您的过敏原!)',
     scannedFoodAlt: '已扫描的食物图片',
+  },
+
+  // Settings Page -- NEW
+  settings: {
+    title: '开发者设置',
+    description: '手动覆盖应用行为以便测试。设置将本地保存在您的浏览器中。',
+    operatingModeTitle: '操作模式覆盖',
+    modeAutomatic: '自动 (移动端：相机，桌面端：上传)',
+    modeForceCamera: '强制相机模式 (用于桌面端测试)',
+    modeForceUpload: '强制上传模式',
+    settingsSaved: '设置已保存！',
+    settingsSavedDesc: '您的首选操作模式已更新。',
   },
 
   // Global Metadata

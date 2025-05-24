@@ -15,6 +15,7 @@ export default {
     scanFood: 'Scan Food',
     scanHistory: 'Scan History',
     allergyProfile: 'Allergy Profile',
+    settings: 'Settings', // New
   },
 
   // HomePage & ImageUploader
@@ -56,6 +57,8 @@ export default {
     retakePhotoButton: "Retake Photo",
     allergensFoundCount: '{count} allergens found',
     includesYourAllergy: '(Includes your allergy!)',
+    switchToUploadMode: 'Switch to Upload Mode',
+    switchToCameraMode: 'Switch to Camera Mode',
   },
 
   // AllergenResults Component
@@ -108,6 +111,18 @@ export default {
     allergensFoundCount: '{count} allergens found',
     includesYourAllergy: '(Includes your allergy!)',
     scannedFoodAlt: 'Scanned food item',
+  },
+
+  // Settings Page -- NEW
+  settings: {
+    title: 'Developer Settings',
+    description: 'Manually override app behavior for testing purposes. Settings are saved locally to your browser.',
+    operatingModeTitle: 'Operating Mode Override',
+    modeAutomatic: 'Automatic (Mobile: Camera, Desktop: Upload)',
+    modeForceCamera: 'Force Camera Mode (for testing on desktop)',
+    modeForceUpload: 'Force Upload Mode',
+    settingsSaved: 'Settings Saved!',
+    settingsSavedDesc: 'Your preferred operating mode has been updated.',
   },
 
   // Global Metadata
