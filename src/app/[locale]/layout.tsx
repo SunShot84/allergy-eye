@@ -29,14 +29,14 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({ // Made this function async
   children,
-  params, // Add params to the function signature
+  params, 
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string }; // Define the type for params
+  params: { locale: string }; 
 }>) {
-  const locale = params.locale; // Get locale from route parameters
+  const locale = params.locale; // Now correctly accessed in an async function
 
   return (
     <html lang={locale} suppressHydrationWarning>
