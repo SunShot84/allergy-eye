@@ -1,4 +1,4 @@
-'use server';
+
 /**
  * @fileOverview Prioritizes identified allergens based on the user's personal allergy profile.
  *
@@ -7,7 +7,7 @@
  * - PrioritizeAllergensOutput - The return type for the prioritizeAllergens function.
  */
 
-import {z} from 'genkit/zod'; // Zod can still be used for schema definition and type inference
+import {z} from 'zod'; // Changed from 'genkit/zod'
 
 const PrioritizeAllergensInputSchema = z.object({
   identifiedAllergens: z
@@ -28,7 +28,7 @@ const PrioritizeAllergensOutputSchema = z.object({
 });
 export type PrioritizeAllergensOutput = z.infer<typeof PrioritizeAllergensOutputSchema>;
 
-export function prioritizeAllergens( // Changed to synchronous and plain function
+export function prioritizeAllergens( 
   input: PrioritizeAllergensInput
 ): PrioritizeAllergensOutput {
   const {
@@ -53,3 +53,4 @@ export function prioritizeAllergens( // Changed to synchronous and plain functio
 
   return {prioritizedAllergens};
 }
+
