@@ -13,9 +13,18 @@ import { useI18n } from '@/lib/i18n/client';
 interface ImageUploaderProps {
   onImageUpload: (file: File, dataUrl: string) => void;
   isLoading: boolean;
+  uploaderTitle: string;
+  uploaderDescription: string;
+  imageAltText?: string;
 }
 
-export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) {
+export function ImageUploader({ 
+  onImageUpload, 
+  isLoading,
+  uploaderTitle,
+  uploaderDescription,
+  imageAltText = "Uploaded image preview" 
+}: ImageUploaderProps) {
   const t = useI18n();
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -67,19 +76,25 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
     }
   };
 
+  // Reset preview when isLoading becomes false (analysis finished or cancelled)
+  // and there is no analysisResult (meaning it might have failed or was for a different mode)
+  // This specific logic might be better handled in the parent component (HomePage)
+  // by explicitly calling handleRemoveImage or passing a reset prop.
+  // For now, this component only clears its own preview state.
+
   return (
     <Card
       className="w-full max-w-lg mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300"
       onClick={handleCardClick}
       role="button"
-      aria-label={t('home.uploadTitle')}
+      aria-label={uploaderTitle}
       tabIndex={preview ? -1 : 0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(); }}
     >
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center">{t('home.uploadTitle')}</CardTitle>
+        <CardTitle className="text-2xl font-semibold text-center">{uploaderTitle}</CardTitle>
         <CardDescription className="text-center">
-          {t('home.uploadDescription')}
+          {uploaderDescription}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4 p-6">
@@ -91,7 +106,7 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
             </div>
           ) : preview ? (
             <>
-              <Image src={preview} alt={t('home.uploadTitle')} layout="fill" objectFit="contain" className="rounded-md p-1" data-ai-hint="food preview" />
+              <Image src={preview} alt={imageAltText} layout="fill" objectFit="contain" className="rounded-md p-1" data-ai-hint="ingredient list preview" />
               <Button
                 variant="destructive"
                 size="icon"
@@ -115,7 +130,7 @@ export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) 
             accept="image/png, image/jpeg, image/webp"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             onChange={handleFileChange}
-            onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to the Card
+            onClick={(e) => e.stopPropagation()} 
             disabled={isLoading || !!preview}
             aria-hidden="true"
           />

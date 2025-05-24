@@ -1,7 +1,7 @@
 
 export default {
   // General
-  appName: '過敏眼',
+  appName: '過敏眼 AllergyEye',
   close: '關閉',
   delete: '刪除',
   cancel: '取消',
@@ -20,15 +20,24 @@ export default {
 
   // HomePage & ImageUploader
   home: {
+    scanFoodTab: '掃描食物成品',
+    scanIngredientsTab: '掃描成分表',
     uploadTitle: '上傳食物圖片',
     uploadDescription: '拍攝或選擇食物圖片以識別潛在的過敏原。',
-    howItWorksTitle: '運作方式',
+    uploadIngredientsTitle: '上傳成分表圖片',
+    uploadIngredientsDescription: '上傳清晰的成分表圖片，我們將讀取文字並找出潛在過敏原。',
+    howItWorksTitle: '食物掃描如何運作',
     howItWorksStep1: '1. 上傳食物圖片或拍照。',
-    howItWorksStep2: '2. 我們的人工智慧將分析圖片以識別潛在的過敏原及其來源。',
+    howItWorksStep2: '2. 我們的人工智慧將分析圖片以識別潛在的過敏原及其在食物中的來源。',
     howItWorksStep3: '3. 結果將顯示過敏原、其來源和可信度。',
     howItWorksStep4: '在「檔案」部分新增您已知的過敏原，以個性化結果。',
+    howItWorksIngredientsTitle: '成分掃描如何運作',
+    howItWorksIngredientsStep1: "1. 上傳清晰的產品成分表圖片。",
+    howItWorksIngredientsStep2: "2. 我們的人工智慧將讀取文字並識別列出的潛在過敏原。",
+    howItWorksIngredientsStep3: "3. 結果將顯示識別出的過敏原及其來源文字片段。",
+    howItWorksIngredientsStep4: "在「檔案」中新增您已知的過敏原以個性化結果。",
     analysisCompleteTitle: '分析完成',
-    analysisCompleteDescription: '已識別潛在的過敏原及其來源。',
+    analysisCompleteDescription: '已從圖片中識別潛在的過敏原及其來源。',
     analysisFailedTitle: '分析失敗',
     analysisFailedDescription: '無法分析圖片。請重試。',
     analyzing: '正在分析圖片...',
@@ -64,7 +73,7 @@ export default {
   // AllergenResults Component
   allergenResults: {
     title: '過敏原分析',
-    description: '圖片中識別出的潛在過敏原。与您檔案匹配的過敏原將被高亮顯示。',
+    description: '已識別的潛在過敏原。與您檔案匹配的過敏原將被高亮顯示。',
     noAllergensDetected: '未檢測到過敏原',
     noAllergensInfo: '我們的分析未在您上傳的圖片中發現任何常見的過敏原。但是，如果您有嚴重的過敏症，請務必仔細檢查成分。',
     yourAllergyBadge: '您的過敏原',
@@ -72,6 +81,7 @@ export default {
     lowConfidenceInfo: '可信度較低。可能不存在。',
     sourceLabel: '來源: {source}',
     unknownSource: '來源: 未指定',
+    extractedTextTitle: '提取的成分表文字：',
   },
 
   // ProfilePage & ProfileForm
@@ -119,7 +129,7 @@ export default {
   settings: {
     title: '開發者設定',
     description: '手動覆蓋應用程式行為以便測試。設定將本地儲存在您的瀏覽器中。',
-    operatingModeTitle: '操作模式覆蓋',
+    operatingModeTitle: '操作模式覆蓋 (食物掃描)',
     modeAutomatic: '自動 (行動裝置：相機，桌面裝置：上傳)',
     modeForceCamera: '強制相機模式 (用於桌面裝置測試)',
     modeForceUpload: '強制上傳模式',
@@ -133,12 +143,17 @@ export default {
     jsonStructure: "請以JSON物件格式回應，其中包含一个名為 'allergens' 的鍵。'allergens' 鍵對應一个物件陣列。陣列中的每个物件必須包含三个鍵：'allergen' (一个字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'乳製品')，'confidence' (一个0.0到1.0之間（含）的數字，表示你對此過敏原存在的可信度)，以及 'sourceFoodItem' (一个可選的字串，使用 {locale} 描述圖片中該過敏原的具體食物來源，例如：'餅乾'，'沙拉醬')。如果你在圖片中未識別到任何過敏原，'allergens' 陣列應為空。",
     userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。對於每個識別出的過敏原，請在 'sourceFoodItem' 字段中指明其在圖片中的可能食物來源，並以 {locale} 進行描述。請進行全面分析，列出您可以從圖像中推斷出的所有*潛在*過敏原，即使它們的存在僅是疑似或不太確定。您的目標是盡可能詳盡地識別潛在風險。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。然而，你的主要任務是從圖片本身識別所有潛在的過敏原及其來源，並以 {locale} 列出過敏原名稱和來源描述。",
     identifyRequest: "請識別此食物圖片中的過敏原。請用 {locale} 列出過敏原名稱。",
+
+    ingredientsSystemInstruction: "您是一個人工智慧，負責從成分表圖片中提取文字，然後從提取的文字中識別潛在的過敏原。您的回答必須使用 {locale}。",
+    ingredientsJsonStructure: "請以JSON物件格式回應。此物件必須包含兩個鍵：'extractedText' (一個字串，包含您從成分表圖片中讀取到的所有文字) 和 'allergens' (一個物件陣列)。'allergens' 陣列中的每個物件必須包含三個鍵：'allergen' (一個字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'奶粉')，'confidence' (一個0.0到1.0之間（含）的數字，表示您根據文字判斷此過敏原存在的置信度)，以及 'sourceFoodItem' (一個字串，使用 {locale} 表示從提取文字中指示此過敏原的確切片語或成分，例如：'大豆卵磷脂'、'小麥粉')。如果未識別到過敏原，'allergens' 陣列應為空。如果無法提取到文字，'extractedText' 應為空字串，'allergens' 陣列也應為空。",
+    ingredientsUserAllergyContext: "首先，請準確地將提供的成分表圖片中的所有文字轉錄到 'extractedText' 欄位。然後，從這個 'extractedText' 中識別所有潛在的過敏原。對於每個識別出的過敏原，請在 'allergen' 欄位中提供其 {locale} 名稱，在 'confidence' 欄位中提供您的置信度，並在 'sourceFoodItem' 欄位中提供指示此過敏原的成分表中的確切文字片段（也使用 {locale}）。請列出您可以從文字中推斷出的所有*潛在*過敏原，即使它們的存在僅是疑似或不太確定。您的目標是盡可能詳盡。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。您的主要任務是分析提供的成分表圖片。",
+    ingredientsIdentifyRequest: "請從此成分表圖片中提取文字，並從文字中識別所有潛在的過敏原。請用 {locale} 列出過敏原名稱及其來源文字片段。",
   },
   
   // Global Metadata
   metadata: {
     title: '過敏眼 - 食物過敏原掃描器',
-    description: '透過拍照識別食物過敏原。支援英文、簡體中文和繁體中文。',
+    description: '透過拍照或掃描成分表識別食物過敏原。支援英文、簡體中文和繁體中文。',
   },
 
   // Language Switcher

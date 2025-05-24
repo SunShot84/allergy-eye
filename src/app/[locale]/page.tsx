@@ -6,7 +6,7 @@ import { ImageUploader } from '@/components/allergy-eye/image-uploader';
 import { CameraModeUI } from '@/components/allergy-eye/camera-mode-ui';
 import { ModeToggleSwitch } from '@/components/allergy-eye/mode-toggle-switch';
 import { AllergenResults } from '@/components/allergy-eye/allergen-results';
-import { analyzeFoodImage, type AllergenAnalysisResult } from '@/app/[locale]/actions';
+import { analyzeFoodImage, analyzeIngredientsListImage, type AllergenAnalysisResult } from '@/app/[locale]/actions';
 import { useToast } from '@/hooks/use-toast';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -19,18 +19,20 @@ import {
 } from '@/lib/constants';
 import type { UserProfile, ScanResultItem } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info } from 'lucide-react';
-import { useI18n, useCurrentLocale } from '@/lib/i18n/client'; // Added useCurrentLocale
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 
 const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 const HomePage_INITIAL_DEV_MODE: DevPreferredMode = 'automatic';
 
-type OperatingMode = 'upload' | 'camera';
+type OperatingMode = 'upload' | 'camera'; // For food scan
+type ScanType = 'food' | 'ingredients';
 
 export default function HomePage() {
   const t = useI18n();
-  const currentLocale = useCurrentLocale(); // Get current locale
+  const currentLocale = useCurrentLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
   const { toast } = useToast();
@@ -40,28 +42,35 @@ export default function HomePage() {
   const [devPreferredMode] = useLocalStorage<DevPreferredMode>(DEV_PREFERRED_MODE_STORAGE_KEY, HomePage_INITIAL_DEV_MODE);
 
   const isMobile = useIsMobile();
-  const [operatingMode, setOperatingMode] = useState<OperatingMode>('upload');
+  const [foodOperatingMode, setFoodOperatingMode] = useState<OperatingMode>('upload');
+  const [scanType, setScanType] = useState<ScanType>('food');
   const [clientSideReady, setClientSideReady] = useState(false);
 
   useEffect(() => {
     setClientSideReady(true);
-    if (devPreferredMode === 'force_camera') {
-      setOperatingMode('camera');
-    } else if (devPreferredMode === 'force_upload') {
-      setOperatingMode('upload');
-    } else { 
-      setOperatingMode(isMobile ? 'camera' : 'upload');
+    if (scanType === 'food') {
+      if (devPreferredMode === 'force_camera') {
+        setFoodOperatingMode('camera');
+      } else if (devPreferredMode === 'force_upload') {
+        setFoodOperatingMode('upload');
+      } else { 
+        setFoodOperatingMode(isMobile ? 'camera' : 'upload');
+      }
     }
-  }, [isMobile, devPreferredMode]);
+  }, [isMobile, devPreferredMode, scanType]);
 
 
-  const processImageDataUrl = async (dataUrl: string) => {
+  const processImageDataUrl = async (dataUrl: string, currentScanType: ScanType) => {
     setIsLoading(true);
-    setAnalysisResult(null);
+    setAnalysisResult(null); // Clear previous results
 
     try {
-      // Pass currentLocale to the server action
-      const result = await analyzeFoodImage(dataUrl, userProfile.knownAllergies, currentLocale);
+      let result: AllergenAnalysisResult;
+      if (currentScanType === 'food') {
+        result = await analyzeFoodImage(dataUrl, userProfile.knownAllergies, currentLocale);
+      } else { // ingredients
+        result = await analyzeIngredientsListImage(dataUrl, userProfile.knownAllergies, currentLocale);
+      }
       setAnalysisResult(result);
 
       const newHistoryItem: ScanResultItem = {
@@ -71,7 +80,9 @@ export default function HomePage() {
         prioritizedAllergens: result.prioritizedAllergens,
         userProfileAllergiesAtScanTime: userProfile.knownAllergies,
         timestamp: Date.now(),
-        foodDescription: result.foodDescription,
+        foodDescription: result.foodDescription, // Might be undefined for ingredients
+        extractedText: result.extractedText, // Might be undefined for food
+        scanType: currentScanType,
       };
       
       setScanHistory(prevHistory => {
@@ -97,20 +108,30 @@ export default function HomePage() {
     }
   };
   
-  const handleFileSelected = (file: File, dataUrl: string) => {
-    processImageDataUrl(dataUrl);
+  const handleFoodFileSelected = (file: File, dataUrl: string) => {
+    processImageDataUrl(dataUrl, 'food');
   };
 
-  const handlePhotoCaptured = (dataUrl: string) => {
-    processImageDataUrl(dataUrl);
+  const handleIngredientsFileSelected = (file: File, dataUrl: string) => {
+    processImageDataUrl(dataUrl, 'ingredients');
   };
 
-  const handleModeChange = (newMode: OperatingMode) => {
-    setOperatingMode(newMode);
-    setAnalysisResult(null);
+  const handleFoodPhotoCaptured = (dataUrl: string) => {
+    processImageDataUrl(dataUrl, 'food');
   };
+
+  const handleFoodModeChange = (newMode: OperatingMode) => {
+    setFoodOperatingMode(newMode);
+    setAnalysisResult(null); // Clear results when changing mode
+  };
+
+  const handleScanTypeChange = (newScanType: string) => {
+    setScanType(newScanType as ScanType);
+    setAnalysisResult(null); // Clear results when changing scan type
+  }
   
   if (!clientSideReady) {
+    // Basic loading state to prevent hydration mismatch issues with isMobile/devPreferredMode
     return (
       <div className="container mx-auto py-8 px-4 flex flex-col items-center space-y-8">
          <Card className="w-full max-w-lg mx-auto shadow-lg">
@@ -121,22 +142,53 @@ export default function HomePage() {
     );
   }
 
+  const foodScanUploaderTitle = t('home.uploadTitle');
+  const foodScanUploaderDescription = t('home.uploadDescription');
+  const ingredientsScanUploaderTitle = t('home.uploadIngredientsTitle');
+  const ingredientsScanUploaderDescription = t('home.uploadIngredientsDescription');
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col items-center space-y-8">
-        
-        {clientSideReady && (isMobile || devPreferredMode !== 'automatic') && (
-          <ModeToggleSwitch
-            currentMode={operatingMode}
-            onModeChange={handleModeChange}
-          />
-        )}
-
-        {operatingMode === 'upload' ? (
-          <ImageUploader onImageUpload={handleFileSelected} isLoading={isLoading} />
-        ) : (
-          <CameraModeUI onPhotoCaptured={handlePhotoCaptured} isLoading={isLoading} />
-        )}
+        <Tabs value={scanType} onValueChange={handleScanTypeChange} className="w-full max-w-lg">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="food">{t('home.scanFoodTab')}</TabsTrigger>
+            <TabsTrigger value="ingredients">{t('home.scanIngredientsTab')}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="food" className="mt-6">
+            {clientSideReady && (isMobile || devPreferredMode !== 'automatic') && (
+              <div className="mb-6 flex justify-center">
+                <ModeToggleSwitch
+                  currentMode={foodOperatingMode}
+                  onModeChange={handleFoodModeChange}
+                />
+              </div>
+            )}
+            {foodOperatingMode === 'upload' ? (
+              <ImageUploader 
+                onImageUpload={handleFoodFileSelected} 
+                isLoading={isLoading && scanType === 'food'} 
+                uploaderTitle={foodScanUploaderTitle}
+                uploaderDescription={foodScanUploaderDescription}
+                imageAltText={t('home.uploadTitle')}
+              />
+            ) : (
+              <CameraModeUI 
+                onPhotoCaptured={handleFoodPhotoCaptured} 
+                isLoading={isLoading && scanType === 'food'} 
+              />
+            )}
+          </TabsContent>
+          <TabsContent value="ingredients" className="mt-6">
+            <ImageUploader 
+              onImageUpload={handleIngredientsFileSelected} 
+              isLoading={isLoading && scanType === 'ingredients'}
+              uploaderTitle={ingredientsScanUploaderTitle}
+              uploaderDescription={ingredientsScanUploaderDescription}
+              imageAltText={t('home.uploadIngredientsTitle')}
+            />
+          </TabsContent>
+        </Tabs>
         
         {analysisResult && (
           <AllergenResults 
@@ -150,14 +202,14 @@ export default function HomePage() {
             <CardHeader>
               <CardTitle className="flex items-center text-lg">
                 <Info className="h-5 w-5 mr-2 text-secondary-foreground" />
-                {t('home.howItWorksTitle')}
+                {scanType === 'food' ? t('home.howItWorksTitle') : t('home.howItWorksIngredientsTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-secondary-foreground space-y-2">
-              <p>{t('home.howItWorksStep1')}</p>
-              <p>{t('home.howItWorksStep2')}</p>
-              <p>{t('home.howItWorksStep3')}</p>
-              <p>{t('home.howItWorksStep4')}</p>
+              <p>{scanType === 'food' ? t('home.howItWorksStep1') : t('home.howItWorksIngredientsStep1')}</p>
+              <p>{scanType === 'food' ? t('home.howItWorksStep2') : t('home.howItWorksIngredientsStep2')}</p>
+              <p>{scanType === 'food' ? t('home.howItWorksStep3') : t('home.howItWorksIngredientsStep3')}</p>
+              <p>{scanType === 'food' ? t('home.howItWorksStep4') : t('home.howItWorksIngredientsStep4')}</p>
             </CardContent>
           </Card>
         )}
