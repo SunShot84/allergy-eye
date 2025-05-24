@@ -22,7 +22,7 @@
     --muted: 0 0% 87.8%; /* #E0E0E0 Lighter grey for muted elements */
     --muted-foreground: 0 0% 45.1%; /* #737373 */
 
-    --accent: 174 44% 54.3%; /* #4DB6AC Muted Teal */
+    --accent: 203 84% 48%; /* #0ea5e9 Blue */
     --accent-foreground: 0 0% 100%; /* White */
 
     --destructive: 0 72.2% 50.6%; /* A suitable red for destructive actions */
@@ -30,7 +30,7 @@
 
     --border: 0 0% 85.1%; /* #D9D9D9 */
     --input: 0 0% 85.1%; /* #D9D9D9 */
-    --ring: 207 87% 68.2%; /* Soft Blue for rings */
+    --ring: 203 84% 48%; /* Blue for rings, matching new accent */
 
     --radius: 0.5rem;
 
@@ -46,10 +46,10 @@
     --sidebar-foreground: 0 0% 13.9%; /* Dark Grey text */
     --sidebar-primary: 207 87% 68.2%; /* Soft Blue */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 174 44% 54.3%; /* Muted Teal */
-    --sidebar-accent-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 203 84% 48%; /* Blue, from main accent */
+    --sidebar-accent-foreground: 0 0% 100%; /* White, from main accent-foreground */
     --sidebar-border: 0 0% 90.1%; /* #E6E6E6 */
-    --sidebar-ring: 207 87% 68.2%; /* Soft Blue */
+    --sidebar-ring: 203 84% 48%; /* Blue, from main ring */
   }
 
   .dark {
@@ -72,24 +72,24 @@
     --muted: 0 0% 20%;
     --muted-foreground: 0 0% 65.1%;
 
-    --accent: 174 44% 54.3%; /* Muted Teal */
-    --accent-foreground: 0 0% 10%;
+    --accent: 203 84% 48%; /* #0ea5e9 Blue */
+    --accent-foreground: 0 0% 100%; /* White */
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 25.1%;
     --input: 0 0% 25.1%;
-    --ring: 207 87% 68.2%;
+    --ring: 203 84% 48%; /* Blue for rings */
 
     --sidebar-background: 0 0% 13.9%; /* Dark sidebar */
     --sidebar-foreground: 0 0% 94.1%;
     --sidebar-primary: 207 87% 68.2%;
     --sidebar-primary-foreground: 0 0% 10%;
-    --sidebar-accent: 174 44% 54.3%;
-    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-accent: 203 84% 48%; /* Blue, from main accent */
+    --sidebar-accent-foreground: 0 0% 100%; /* White, from main accent-foreground */
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 207 87% 68.2%;
+    --sidebar-ring: 203 84% 48%; /* Blue, from main ring */
   }
 }
 

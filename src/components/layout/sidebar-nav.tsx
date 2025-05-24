@@ -20,23 +20,28 @@ export function SidebarNav() {
 
   return (
     <SidebarMenu>
-      {navItems.map((item) => (
-        <SidebarMenuItem key={item.label}>
-          <Link href={item.href} passHref legacyBehavior>
-            <SidebarMenuButton
-              isActive={pathname === item.href}
-              className={cn(
-                "w-full justify-start",
-                pathname === item.href && "bg-sidebar-accent text-sidebar-accent-foreground"
-              )}
-              tooltip={item.label}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="truncate">{item.label}</span>
-            </SidebarMenuButton>
-          </Link>
-        </SidebarMenuItem>
-      ))}
+      {navItems.map((item) => {
+        const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+        return (
+          <SidebarMenuItem key={item.label}>
+            <Link href={item.href} passHref legacyBehavior>
+              <SidebarMenuButton
+                isActive={isActive}
+                className={cn(
+                  "w-full justify-start",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "hover:bg-black/5 dark:hover:bg-white/5" // Subtle hover for non-active items
+                )}
+                tooltip={item.label}
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="truncate">{item.label}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        );
+      })}
     </SidebarMenu>
   );
 }

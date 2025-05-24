@@ -12,6 +12,7 @@ import {
 import { Globe } from 'lucide-react';
 import { useTransition, useEffect } from 'react';
 import { useLoading } from '@/contexts/loading-context';
+import { cn } from '@/lib/utils';
 
 export function LanguageSwitcher() {
   const changeLocale = useChangeLocale();
@@ -45,7 +46,12 @@ export function LanguageSwitcher() {
       onValueChange={handleLocaleChange}
       disabled={isPending}
     >
-      <SelectTrigger className="w-auto min-w-[120px] gap-2 border-border hover:bg-accent/50">
+      <SelectTrigger 
+        className={cn(
+          "w-auto min-w-[120px] gap-2 border-border",
+          "hover:bg-black/5 dark:hover:bg-white/5" // Subtle hover
+        )}
+      >
         <Globe className="h-4 w-4 text-muted-foreground" />
         <SelectValue placeholder={t('languageSwitcher.placeholder')} />
       </SelectTrigger>
