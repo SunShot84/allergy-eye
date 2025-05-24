@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info } from 'lucide-react'; // Added Info icon
 import type { AllergenAnalysisResult } from '@/app/[locale]/actions';
 import { Progress } from '@/components/ui/progress';
 import { useI18n } from '@/lib/i18n/client';
@@ -18,8 +18,7 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
   const t = useI18n();
 
   useEffect(() => {
-    // The fadeIn animation is now handled by tailwind.config.ts and globals.css
-    // No client-side style injection needed here.
+    // The fadeIn animation is handled by tailwind.config.ts and globals.css
   }, []);
   
   if (!analysisResult) {
@@ -52,7 +51,12 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
 
     if (aIsPrioritized && !bIsPrioritized) return -1;
     if (!aIsPrioritized && bIsPrioritized) return 1;
-    return b.confidence - a.confidence;
+    // If user allergy status is the same, sort by confidence (higher first)
+    if (b.confidence !== a.confidence) {
+      return b.confidence - a.confidence;
+    }
+    // If confidence is also the same, sort alphabetically
+    return a.allergen.localeCompare(b.allergen);
   });
 
   return (
@@ -65,12 +69,12 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">
-          {sortedAllergens.map(({ allergen, confidence }) => {
+          {sortedAllergens.map(({ allergen, confidence, sourceFoodItem }) => {
             const isUserAllergy = userProfileAllergies.includes(allergen.toLowerCase());
             const confidencePercentage = Math.round(confidence * 100);
             return (
               <li
-                key={allergen}
+                key={allergen + (sourceFoodItem || '')} // Ensure key is unique if allergen name repeats with different sources
                 className={`p-4 rounded-lg border ${
                   isUserAllergy ? 'border-destructive bg-destructive/10' : 'border-border bg-card'
                 } transition-all duration-300 hover:shadow-md`}
@@ -90,6 +94,19 @@ export function AllergenResults({ analysisResult, userProfileAllergies }: Allerg
                   <span>{t('allergenResults.confidence', { percentage: confidencePercentage })}</span>
                 </div>
                 <Progress value={confidencePercentage} className={`h-2 mt-1 ${isUserAllergy ? '[&>div]:bg-destructive' : ''}`} />
+                
+                {sourceFoodItem ? (
+                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                    <Info className="h-3 w-3" />
+                    {t('allergenResults.sourceLabel', { source: sourceFoodItem })}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                    <Info className="h-3 w-3" />
+                    {t('allergenResults.unknownSource')}
+                  </p>
+                )}
+
                 {confidence < 0.5 && !isUserAllergy && (
                    <p className="text-xs text-muted-foreground mt-1">{t('allergenResults.lowConfidenceInfo')}</p>
                 )}

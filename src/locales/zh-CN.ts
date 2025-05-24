@@ -24,11 +24,11 @@ export default {
     uploadDescription: '拍摄或选择食物图片以识别潜在的过敏原。',
     howItWorksTitle: '工作原理',
     howItWorksStep1: '1. 上传食物图片或拍照。',
-    howItWorksStep2: '2. 我们的人工智能将分析图片以识别潜在的过敏原。',
-    howItWorksStep3: '3. 结果将显示过敏原和置信度。',
+    howItWorksStep2: '2. 我们的人工智能将分析图片以识别潜在的过敏原及其来源。',
+    howItWorksStep3: '3. 结果将显示过敏原、其来源和置信度。',
     howItWorksStep4: '在“档案”部分添加您已知的过敏原，以个性化结果。',
     analysisCompleteTitle: '分析完成',
-    analysisCompleteDescription: '已识别潜在的过敏原。',
+    analysisCompleteDescription: '已识别潜在的过敏原及其来源。',
     analysisFailedTitle: '分析失败',
     analysisFailedDescription: '无法分析图片。请重试。',
     analyzing: '正在分析图片...',
@@ -70,6 +70,8 @@ export default {
     yourAllergyBadge: '您的过敏原',
     confidence: '置信度: {percentage}%',
     lowConfidenceInfo: '置信度较低。可能不存在。',
+    sourceLabel: '来源: {source}',
+    unknownSource: '来源: 未指定',
   },
 
   // ProfilePage & ProfileForm
@@ -128,8 +130,8 @@ export default {
   // AI Interaction Prompts
   aiPrompt: {
     systemInstruction: "你是一个从图片中识别食物潜在过敏原的人工智能。请分析图片。你的回答必须使用 {locale}。",
-    jsonStructure: "请以JSON对象格式回应，其中包含一个名为 'allergens' 的键。'allergens' 键对应一个对象数组。数组中的每个对象必须包含两个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用 {locale}，例如：'花生'、'麸质'、'乳制品') 和 'confidence' (一个0.0到1.0之间（含）的数字，表示你对此过敏原存在的置信度)。如果你在图片中未识别到任何过敏原，'allergens' 数组应为空。",
-    userAllergyContext: "请仅关注图片中可见或强烈暗示的成分。作为参考，用户已知有以下过敏史（以其当前输入语言记录）：{knownAllergiesString}。然而，你的主要任务是从图片本身识别所有潜在的过敏原，并以 {locale} 列出过敏原名称。",
+    jsonStructure: "请以JSON对象格式回应，其中包含一个名为 'allergens' 的键。'allergens' 键对应一个对象数组。数组中的每个对象必须包含三个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用 {locale}，例如：'花生'、'麸质'、'乳制品')，'confidence' (一个0.0到1.0之间（含）的数字，表示你对此过敏原存在的置信度)，以及 'sourceFoodItem' (一个可选的字符串，使用 {locale} 描述图片中该过敏原的具体食物来源，例如：'饼干'，'沙拉酱')。如果你在图片中未识别到任何过敏原，'allergens' 数组应为空。",
+    userAllergyContext: "请仅关注图片中可见或强烈暗示的成分。对于每个识别出的过敏原，请在 'sourceFoodItem' 字段中指明其在图片中的可能食物来源，并以 {locale} 进行描述。作为参考，用户已知有以下过敏史（以其当前输入语言记录）：{knownAllergiesString}。然而，你的主要任务是从图片本身识别所有潜在的过敏原及其来源，并以 {locale} 列出过敏原名称和来源描述。",
     identifyRequest: "请识别此食物图片中的过敏原。请用 {locale} 列出过敏原名称。",
   },
 

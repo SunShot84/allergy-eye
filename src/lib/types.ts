@@ -1,6 +1,8 @@
+
 export interface AllergenInfo {
   allergen: string;
   confidence: number; // 0-1
+  sourceFoodItem?: string; // Optional: Describes the food item from the image that is the source
 }
 
 export interface ScanResultItem {

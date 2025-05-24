@@ -5,11 +5,16 @@ import OpenAI from 'openai';
 import { prioritizeAllergens } from "@/ai/flows/prioritize-allergens-based-on-profile";
 import type { PrioritizeAllergensInput, PrioritizeAllergensOutput } from "@/ai/flows/prioritize-allergens-based-on-profile";
 import type { AllergenInfo } from "@/lib/types";
-import { getI18n } from '@/lib/i18n/server'; // To get translations for the current locale
+import { getI18n } from '@/lib/i18n/server';
 
-// Define the expected structure from OpenAI
+// Define the expected structure from OpenAI, now including sourceFoodItem
+interface OpenAIAllergenInfo {
+  allergen: string;
+  confidence: number;
+  sourceFoodItem?: string; 
+}
 interface OpenAIAllergenIdentificationOutput {
-  allergens: AllergenInfo[];
+  allergens: OpenAIAllergenInfo[];
 }
 
 export interface AllergenAnalysisResult {
@@ -25,7 +30,7 @@ const openai = new OpenAI({
 export async function analyzeFoodImage(
   photoDataUri: string,
   userKnownAllergiesArray: string[],
-  currentLocale: 'en' | 'zh-CN' | 'zh-TW' // Added locale parameter
+  currentLocale: 'en' | 'zh-CN' | 'zh-TW'
 ): Promise<AllergenAnalysisResult> {
   if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "YOUR_OPENAI_API_KEY_HERE") {
     const errorMessage = "OpenAI API key is not configured or is still the placeholder. Please update your .env file with your actual OpenAI API key.";
@@ -33,21 +38,12 @@ export async function analyzeFoodImage(
     throw new Error(errorMessage);
   }
 
-  // Get a t function for the current locale to build the prompt
-  // Note: getI18n in a server action might implicitly use the request's locale if available,
-  // but explicitly passing currentLocale ensures we use the one from the client's UI.
-  // For server actions, it's generally better if they are locale-agnostic or get locale from their direct caller.
-  // However, since we need to construct the prompt *in* the target language, we need `t`.
-  // For simplicity in this context, we'll re-fetch `t` based on `currentLocale`.
-  // A more advanced setup might involve a shared `t` or passing fully formed prompts.
   const t = await getI18n(currentLocale);
 
-
   try {
-    const knownAllergiesString = userKnownAllergiesArray.join(', ');
+    const knownAllergiesString = userKnownAllergiesArray.join(', ') || t('profile.noAllergiesYet'); // Provide a fallback if no allergies
     let identifiedAllergens: AllergenInfo[] = [];
 
-    // Construct the system prompt using translated strings
     const systemPromptInstruction = t('aiPrompt.systemInstruction', { locale: currentLocale });
     const jsonStructureInstruction = t('aiPrompt.jsonStructure', { locale: currentLocale });
     const userAllergyContextInstruction = t('aiPrompt.userAllergyContext', { knownAllergiesString, locale: currentLocale });
@@ -56,7 +52,7 @@ export async function analyzeFoodImage(
     const userPromptText = t('aiPrompt.identifyRequest', { locale: currentLocale });
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo",
+      model: "gpt-4-turbo", // or "gpt-4-vision-preview" if still preferred for pure vision tasks, but gpt-4-turbo is generally good
       response_format: { type: "json_object" },
       messages: [
         {
@@ -76,7 +72,7 @@ export async function analyzeFoodImage(
           ],
         },
       ],
-      max_tokens: 1000,
+      max_tokens: 1000, // Increased slightly in case source descriptions are long
     });
 
     if (response.choices[0].message.content) {
@@ -84,7 +80,8 @@ export async function analyzeFoodImage(
       if (openAIResult.allergens && Array.isArray(openAIResult.allergens)) {
          identifiedAllergens = openAIResult.allergens.map(a => ({
            allergen: a.allergen,
-           confidence: typeof a.confidence === 'number' ? parseFloat(a.confidence.toFixed(2)) : 0 
+           confidence: typeof a.confidence === 'number' ? parseFloat(a.confidence.toFixed(2)) : 0,
+           sourceFoodItem: a.sourceFoodItem || undefined, // Map the new field
          }));
       }
     } else {
@@ -100,6 +97,7 @@ export async function analyzeFoodImage(
     return {
       identifiedAllergens: identifiedAllergens,
       prioritizedAllergens: prioritizationResult.prioritizedAllergens,
+      // foodDescription might be derivable or explicitly asked in a more complex prompt
     };
   } catch (error) {
     console.error("Error in analyzeFoodImage server action:", error);
