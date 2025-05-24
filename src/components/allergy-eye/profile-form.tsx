@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -15,7 +16,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ initialAllergies, onSave }: ProfileFormProps) {
-  const { t } = useI18n();
+  const t = useI18n();
   const [allergies, setAllergies] = useState<string[]>(initialAllergies);
   const [newAllergy, setNewAllergy] = useState('');
   const { toast } = useToast();

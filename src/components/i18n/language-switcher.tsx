@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useChangeLocale, useCurrentLocale, useI18n } from '@/lib/i18n/client';
@@ -13,7 +14,7 @@ import { Globe } from 'lucide-react';
 export function LanguageSwitcher() {
   const changeLocale = useChangeLocale();
   const currentLocale = useCurrentLocale();
-  const { t } = useI18n();
+  const t = useI18n();
 
   const locales = [
     { value: 'en', label: t('languageSwitcher.en') },

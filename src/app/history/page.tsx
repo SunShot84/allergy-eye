@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -22,7 +23,7 @@ import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 const HistoryPage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 
 export default function HistoryPage() {
-  const { t } = useI18n();
+  const t = useI18n();
   const currentLocale = useCurrentLocale();
   const [scanHistory, setScanHistory] = useLocalStorage<ScanResultItem[]>(SCAN_HISTORY_STORAGE_KEY, HistoryPage_INITIAL_SCAN_HISTORY);
   const [selectedItem, setSelectedItem] = useState<ScanResultItem | null>(null);

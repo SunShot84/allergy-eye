@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -29,7 +30,7 @@ interface ScanHistoryListProps {
 }
 
 export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClearHistory }: ScanHistoryListProps) {
-  const { t } = useI18n();
+  const t = useI18n();
   const currentLocale = useCurrentLocale();
 
   const formatTimestampShort = (timestamp: number) => {

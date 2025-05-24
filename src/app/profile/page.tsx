@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -12,7 +13,7 @@ import { useI18n } from '@/lib/i18n/client';
 const ProfilePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 
 export default function ProfilePage() {
-  const { t } = useI18n();
+  const t = useI18n();
   const [userProfile, setUserProfile] = useLocalStorage<UserProfile>(
     ALLERGY_PROFILE_STORAGE_KEY,
     ProfilePage_INITIAL_USER_PROFILE

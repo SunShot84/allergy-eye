@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect } from 'react';
@@ -14,7 +15,7 @@ interface AllergenResultsProps {
 }
 
 export function AllergenResults({ analysisResult, userProfileAllergies }: AllergenResultsProps) {
-  const { t } = useI18n();
+  const t = useI18n();
 
   useEffect(() => {
     // The fadeIn animation is now handled by tailwind.config.ts and globals.css

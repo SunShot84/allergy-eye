@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useCallback } from 'react';
@@ -15,7 +16,7 @@ interface ImageUploaderProps {
 }
 
 export function ImageUploader({ onImageUpload, isLoading }: ImageUploaderProps) {
-  const { t } = useI18n();
+  const t = useI18n();
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);

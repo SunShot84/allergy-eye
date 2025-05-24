@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -20,7 +21,7 @@ import { LanguageSwitcher } from '@/components/i18n/language-switcher';
 import { useI18n } from '@/lib/i18n/client';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const { t } = useI18n();
+  const t = useI18n();
   return (
     <SidebarProvider defaultOpen >
       <Sidebar collapsible="icon">

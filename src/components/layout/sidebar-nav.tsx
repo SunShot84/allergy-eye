@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -9,7 +10,7 @@ import { useI18n } from '@/lib/i18n/client';
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const { t } = useI18n();
+  const t = useI18n();
 
   const navItems = [
     { href: '/', label: t('nav.scanFood'), icon: Home },

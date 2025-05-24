@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -16,7 +17,7 @@ const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
 
 export default function HomePage() {
-  const { t } = useI18n();
+  const t = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
   // const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Keep track of uploaded image for history - removed as it's part of newHistoryItem
