@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
-import type { AllergenAnalysisResult } from '@/app/actions';
+import type { AllergenAnalysisResult } from '@/app/[locale]/actions';
 import { Progress } from '@/components/ui/progress';
 import { useI18n } from '@/lib/i18n/client';
 

@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { ImageUploader } from '@/components/allergy-eye/image-uploader';
 import { AllergenResults } from '@/components/allergy-eye/allergen-results';
-import { analyzeFoodImage, type AllergenAnalysisResult } from '@/app/actions';
+import { analyzeFoodImage, type AllergenAnalysisResult } from '@/app/[locale]/actions';
 import { useToast } from '@/hooks/use-toast';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { ALLERGY_PROFILE_STORAGE_KEY, SCAN_HISTORY_STORAGE_KEY, MAX_HISTORY_ITEMS } from '@/lib/constants';
