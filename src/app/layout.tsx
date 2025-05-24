@@ -30,15 +30,14 @@ export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-  // params.locale is not explicitly used here anymore for the provider,
-  // getCurrentLocale() is more reliable with rewrite strategy.
-  params: { locale?: string };
+  // params prop removed as getCurrentLocale() is the source of truth for resolvedLocale
 }>) {
   let resolvedLocale = await getCurrentLocale();
   const definedLocales = ['en', 'zh-CN', 'zh-TW'];
 
   // Defensive check: Ensure resolvedLocale is one of the defined locales.
-  // getCurrentLocale() should already handle this by falling back to defaultLocale.
+  // getCurrentLocale() should ideally handle this by falling back to defaultLocale
+  // as configured in src/lib/i18n/server.ts.
   if (!definedLocales.includes(resolvedLocale)) {
     console.warn(
       `[RootLayout] getCurrentLocale() returned an unexpected locale '${resolvedLocale}'. Falling back to 'en'.`
