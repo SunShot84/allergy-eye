@@ -133,12 +133,13 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
           </div>
         )}
         <ul className="space-y-4">
-          {sortedAllergens.map(({ allergen, confidence, sourceFoodItem }) => {
+          {sortedAllergens.map((item, index) => {
+            const { allergen, confidence, sourceFoodItem } = item;
             const isUserKnownAllergy = userProfile.knownAllergies.includes(allergen.toLowerCase());
             const confidencePercentage = Math.round(confidence * 100);
             return (
               <li
-                key={allergen + (sourceFoodItem || '')} 
+                key={`${allergen}-${sourceFoodItem || 'nosource'}-${index}`} 
                 className={`p-4 rounded-lg border ${
                   isUserKnownAllergy ? 'border-destructive bg-destructive/10' : 'border-border bg-card'
                 } transition-all duration-300 hover:shadow-md`}
@@ -194,3 +195,4 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
     </Card>
   );
 }
+
