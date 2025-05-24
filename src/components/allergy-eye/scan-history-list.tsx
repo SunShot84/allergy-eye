@@ -86,7 +86,7 @@ export function ScanHistoryList({ historyItems, onViewItem, onDeleteItem, onClea
         )}
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[60vh] pr-4">
+        <ScrollArea className="overflow-auto h-[60vh] pr-4">
           <ul className="space-y-4">
             {historyItems.map(item => (
               <li key={item.id} className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow">

@@ -70,7 +70,7 @@ export default function HistoryPage() {
 
       {selectedItem && (
         <Dialog open={isModalOpen} onOpenChange={(open) => { if(!open) closeModal(); else setIsModalOpen(true); }}>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] h-[90vh] flex flex-col">
             <DialogHeader>
               <DialogTitle className="text-2xl">{t('history.scanDetailsTitle')}</DialogTitle>
               <DialogDescription>
@@ -78,7 +78,7 @@ export default function HistoryPage() {
               </DialogDescription>
             </DialogHeader>
             {/* Ensure ScrollArea takes up available space and its content can indeed overflow */}
-            <ScrollArea className="flex-grow min-h-0"> {/* Added min-h-0 for better flex behavior */}
+            <ScrollArea className="flex-1 min-h-0"> {/* Added min-h-0 for better flex behavior */}
               <div className="space-y-4 py-4">
                 <div className="relative w-full h-64 rounded-md overflow-hidden border">
                   <Image
