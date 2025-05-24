@@ -19,11 +19,16 @@ import { SidebarNav } from './sidebar-nav';
 import { Copyright } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/i18n/language-switcher';
 import { useI18n } from '@/lib/i18n/client';
+import { useLoading } from '@/contexts/loading-context'; // Added import
+import { FullScreenLoader } from './full-screen-loader'; // Added import
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const t = useI18n();
+  const { isLoading } = useLoading(); // Added hook
+
   return (
     <SidebarProvider defaultOpen >
+      {isLoading && <FullScreenLoader />} {/* Added loader */}
       <Sidebar collapsible="icon">
         <SidebarHeader className="p-4">
           <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
