@@ -130,8 +130,8 @@ export default {
   // AI Interaction Prompts
   aiPrompt: {
     systemInstruction: "你是一個從圖片中識別食物潛在過敏原的人工智慧。請分析圖片。你的回答必須使用 {locale}。",
-    jsonStructure: "請以JSON物件格式回應，其中包含一個名為 'allergens' 的鍵。'allergens' 鍵對應一個物件陣列。陣列中的每個物件必須包含三個鍵：'allergen' (一個字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'乳製品')，'confidence' (一個0.0到1.0之間（含）的數字，表示你對此過敏原存在的可信度)，以及 'sourceFoodItem' (一個可選的字串，使用 {locale} 描述圖片中該過敏原的具體食物來源，例如：'餅乾'，'沙拉醬')。如果你在圖片中未識別到任何過敏原，'allergens' 陣列應為空。",
-    userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。對於每個識別出的過敏原，請在 'sourceFoodItem' 字段中指明其在圖片中的可能食物來源，並以 {locale} 進行描述。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。然而，你的主要任務是從圖片本身識別所有潛在的過敏原及其來源，並以 {locale} 列出過敏原名稱和來源描述。",
+    jsonStructure: "請以JSON物件格式回應，其中包含一个名為 'allergens' 的鍵。'allergens' 鍵對應一个物件陣列。陣列中的每个物件必須包含三个鍵：'allergen' (一个字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'乳製品')，'confidence' (一个0.0到1.0之間（含）的數字，表示你對此過敏原存在的可信度)，以及 'sourceFoodItem' (一个可選的字串，使用 {locale} 描述圖片中該過敏原的具體食物來源，例如：'餅乾'，'沙拉醬')。如果你在圖片中未識別到任何過敏原，'allergens' 陣列應為空。",
+    userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。對於每個識別出的過敏原，請在 'sourceFoodItem' 字段中指明其在圖片中的可能食物來源，並以 {locale} 進行描述。請進行全面分析，列出您可以從圖像中推斷出的所有*潛在*過敏原，即使它們的存在僅是疑似或不太確定。您的目標是盡可能詳盡地識別潛在風險。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。然而，你的主要任務是從圖片本身識別所有潛在的過敏原及其來源，並以 {locale} 列出過敏原名稱和來源描述。",
     identifyRequest: "請識別此食物圖片中的過敏原。請用 {locale} 列出過敏原名稱。",
   },
   
