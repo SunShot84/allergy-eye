@@ -20,7 +20,7 @@ import {
 import type { UserProfile, ScanResultItem } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Info } from 'lucide-react';
-import { useI18n } from '@/lib/i18n/client';
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client'; // Added useCurrentLocale
 
 const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
@@ -30,6 +30,7 @@ type OperatingMode = 'upload' | 'camera';
 
 export default function HomePage() {
   const t = useI18n();
+  const currentLocale = useCurrentLocale(); // Get current locale
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AllergenAnalysisResult | null>(null);
   const { toast } = useToast();
@@ -39,17 +40,16 @@ export default function HomePage() {
   const [devPreferredMode] = useLocalStorage<DevPreferredMode>(DEV_PREFERRED_MODE_STORAGE_KEY, HomePage_INITIAL_DEV_MODE);
 
   const isMobile = useIsMobile();
-  const [operatingMode, setOperatingMode] = useState<OperatingMode>('upload'); // Default to upload initially
+  const [operatingMode, setOperatingMode] = useState<OperatingMode>('upload');
   const [clientSideReady, setClientSideReady] = useState(false);
 
   useEffect(() => {
-    // This effect runs once on the client after hydration
     setClientSideReady(true);
     if (devPreferredMode === 'force_camera') {
       setOperatingMode('camera');
     } else if (devPreferredMode === 'force_upload') {
       setOperatingMode('upload');
-    } else { // 'automatic'
+    } else { 
       setOperatingMode(isMobile ? 'camera' : 'upload');
     }
   }, [isMobile, devPreferredMode]);
@@ -60,7 +60,8 @@ export default function HomePage() {
     setAnalysisResult(null);
 
     try {
-      const result = await analyzeFoodImage(dataUrl, userProfile.knownAllergies);
+      // Pass currentLocale to the server action
+      const result = await analyzeFoodImage(dataUrl, userProfile.knownAllergies, currentLocale);
       setAnalysisResult(result);
 
       const newHistoryItem: ScanResultItem = {
@@ -106,7 +107,7 @@ export default function HomePage() {
 
   const handleModeChange = (newMode: OperatingMode) => {
     setOperatingMode(newMode);
-    setAnalysisResult(null); // Clear previous results when mode changes
+    setAnalysisResult(null);
   };
   
   if (!clientSideReady) {

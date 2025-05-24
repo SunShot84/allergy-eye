@@ -15,7 +15,7 @@ export default {
     scanFood: 'Scan Food',
     scanHistory: 'Scan History',
     allergyProfile: 'Allergy Profile',
-    settings: 'Settings', // New
+    settings: 'Settings',
   },
 
   // HomePage & ImageUploader
@@ -113,7 +113,7 @@ export default {
     scannedFoodAlt: 'Scanned food item',
   },
 
-  // Settings Page -- NEW
+  // Settings Page
   settings: {
     title: 'Developer Settings',
     description: 'Manually override app behavior for testing purposes. Settings are saved locally to your browser.',
@@ -123,6 +123,14 @@ export default {
     modeForceUpload: 'Force Upload Mode',
     settingsSaved: 'Settings Saved!',
     settingsSavedDesc: 'Your preferred operating mode has been updated.',
+  },
+
+  // AI Interaction Prompts
+  aiPrompt: {
+    systemInstruction: "You are an AI that identifies potential allergens in food items from images. Analyze the image. Your response must be in {locale}.",
+    jsonStructure: "Respond with a JSON object containing a single key 'allergens'. The 'allergens' key should have an array of objects. Each object in this array must have two keys: 'allergen' (a string representing the name of the identified allergen in {locale}, e.g., 'Peanuts', 'Gluten', 'Dairy') and 'confidence' (a number between 0.0 and 1.0 inclusive, representing your confidence that this allergen is present). If you do not identify any allergens, the 'allergens' array should be empty.",
+    userAllergyContext: "Focus only on ingredients visible or strongly implied by the image. For context, the user has these known allergies (input in their current language): {knownAllergiesString}. However, your primary task is to identify all potential allergens from the image itself, listing allergen names in {locale}.",
+    identifyRequest: "Identify allergens in this food image. Please list allergen names in {locale}.",
   },
 
   // Global Metadata

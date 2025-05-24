@@ -15,7 +15,7 @@ export default {
     scanFood: '掃描食物',
     scanHistory: '掃描歷史',
     allergyProfile: '過敏檔案',
-    settings: '設定', // New
+    settings: '設定',
   },
 
   // HomePage & ImageUploader
@@ -113,7 +113,7 @@ export default {
     scannedFoodAlt: '已掃描的食物圖片',
   },
   
-  // Settings Page -- NEW
+  // Settings Page
   settings: {
     title: '開發者設定',
     description: '手動覆蓋應用程式行為以便測試。設定將本地儲存在您的瀏覽器中。',
@@ -123,6 +123,14 @@ export default {
     modeForceUpload: '強制上傳模式',
     settingsSaved: '設定已儲存！',
     settingsSavedDesc: '您的偏好操作模式已更新。',
+  },
+
+  // AI Interaction Prompts
+  aiPrompt: {
+    systemInstruction: "你是一個從圖片中識別食物潛在過敏原的人工智慧。請分析圖片。你的回答必須使用 {locale}。",
+    jsonStructure: "請以JSON物件格式回應，其中包含一個名為 'allergens' 的鍵。'allergens' 鍵對應一個物件陣列。陣列中的每個物件必須包含兩個鍵：'allergen' (一個字串，表示識別出的過敏原名稱，使用 {locale}，例如：'花生'、'麩質'、'乳製品') 和 'confidence' (一個0.0到1.0之間（含）的數字，表示你對此過敏原存在的可信度)。如果你在圖片中未識別到任何過敏原，'allergens' 陣列應為空。",
+    userAllergyContext: "請僅關注圖片中可見或強烈暗示的成分。作為參考，使用者已知有以下過敏史（以其目前輸入語言記錄）：{knownAllergiesString}。然而，你的主要任務是從圖片本身識別所有潛在的過敏原，並以 {locale} 列出過敏原名稱。",
+    identifyRequest: "請識別此食物圖片中的過敏原。請用 {locale} 列出過敏原名稱。",
   },
   
   // Global Metadata

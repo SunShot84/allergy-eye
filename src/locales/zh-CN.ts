@@ -15,7 +15,7 @@ export default {
     scanFood: '扫描食物',
     scanHistory: '扫描历史',
     allergyProfile: '过敏档案',
-    settings: '设置', // New
+    settings: '设置',
   },
 
   // HomePage & ImageUploader
@@ -113,7 +113,7 @@ export default {
     scannedFoodAlt: '已扫描的食物图片',
   },
 
-  // Settings Page -- NEW
+  // Settings Page
   settings: {
     title: '开发者设置',
     description: '手动覆盖应用行为以便测试。设置将本地保存在您的浏览器中。',
@@ -123,6 +123,14 @@ export default {
     modeForceUpload: '强制上传模式',
     settingsSaved: '设置已保存！',
     settingsSavedDesc: '您的首选操作模式已更新。',
+  },
+
+  // AI Interaction Prompts
+  aiPrompt: {
+    systemInstruction: "你是一个从图片中识别食物潜在过敏原的人工智能。请分析图片。你的回答必须使用 {locale}。",
+    jsonStructure: "请以JSON对象格式回应，其中包含一个名为 'allergens' 的键。'allergens' 键对应一个对象数组。数组中的每个对象必须包含两个键：'allergen' (一个字符串，表示识别出的过敏原名称，使用 {locale}，例如：'花生'、'麸质'、'乳制品') 和 'confidence' (一个0.0到1.0之间（含）的数字，表示你对此过敏原存在的置信度)。如果你在图片中未识别到任何过敏原，'allergens' 数组应为空。",
+    userAllergyContext: "请仅关注图片中可见或强烈暗示的成分。作为参考，用户已知有以下过敏史（以其当前输入语言记录）：{knownAllergiesString}。然而，你的主要任务是从图片本身识别所有潜在的过敏原，并以 {locale} 列出过敏原名称。",
+    identifyRequest: "请识别此食物图片中的过敏原。请用 {locale} 列出过敏原名称。",
   },
 
   // Global Metadata
