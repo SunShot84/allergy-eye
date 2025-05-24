@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect, useId, useMemo } from 'react';
+import Fuse from 'fuse.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,9 +33,30 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
   const [profile, setProfile] = useState<UserProfile>({ knownAllergies: [] });
   const [reportFile, setReportFile] = useState<File | null>(null);
   const [isImportingReport, setIsImportingReport] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
 
-  const availableAllergens: Allergen[] = React.useMemo(() => getAllAllergens(), []);
+  const allAvailableAllergens: Allergen[] = useMemo(() => getAllAllergens(), []);
+
+  const fuse = useMemo(() => {
+    const options = {
+      keys: [
+        'name.sc',
+        'name.tc',
+        'name.eng'
+      ],
+      includeScore: true,
+      threshold: 0.4,
+    };
+    return new Fuse(allAvailableAllergens, options);
+  }, [allAvailableAllergens]);
+
+  const filteredAvailableAllergens = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return allAvailableAllergens;
+    }
+    return fuse.search(searchTerm.trim()).map(result => result.item);
+  }, [searchTerm, allAvailableAllergens, fuse]);
 
   useEffect(() => {
     setProfile(loadUserProfile());
@@ -171,9 +193,20 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
       <CardContent>
         <div className="mb-6">
           <h3 className="text-lg font-medium mb-2">{t('profile.selectYourAllergensTitle')}</h3>
-          <ScrollArea className="h-72 w-full rounded-md border p-4">
+          
+          <div className="mb-4">
+            <Input
+              type="text"
+              placeholder={t('profile.searchAllergenPlaceholder')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
+          <ScrollArea className="h-60 w-full rounded-md border p-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {availableAllergens.map((allergen, index) => {
+              {filteredAvailableAllergens.map((allergen, index) => {
                 const displayName = getAllergenDisplayName(allergen, currentLocale);
                 const isSelected = profile.knownAllergies.includes(allergen.id);
                 return (

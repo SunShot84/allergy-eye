@@ -135,6 +135,7 @@ export default {
     selectYourAllergensTitle: '选择您的过敏原',
     yourSelectedAllergensTitle: '您选择的过敏原',
     removeAllergenAriaLabel: '移除 {allergenName}',
+    searchAllergenPlaceholder: '搜索过敏原 (例如：花生, 牛奶)...',
   },
 
   // HistoryPage & ScanHistoryList Component

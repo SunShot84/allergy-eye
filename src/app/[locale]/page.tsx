@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -22,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info } from 'lucide-react';
 import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
+import { loadUserProfile } from '@/lib/profile-storage';
 
 const HomePage_INITIAL_USER_PROFILE: UserProfile = { knownAllergies: [] };
 const HomePage_INITIAL_SCAN_HISTORY: ScanResultItem[] = [];
@@ -61,6 +61,30 @@ export default function HomePage() {
     setIngredientsOperatingMode(initialMode);
   }, [isMobile, devPreferredMode]);
 
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === ALLERGY_PROFILE_STORAGE_KEY) {
+        // console.log("Detected profile change in localStorage, reloading profile for HomePage.");
+        const updatedProfile = loadUserProfile(); // Use loadUserProfile to get the latest
+        setUserProfile(updatedProfile);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Initial load, in case useLocalStorage hook doesn't pick up immediate changes
+    // from another page before this component mounts with the listener.
+    // This ensures that if the profile was just updated on /allergy-profile and
+    // the user navigates here, we get the latest.
+    const currentStoredProfile = loadUserProfile();
+    if (JSON.stringify(currentStoredProfile) !== JSON.stringify(userProfile)) {
+        setUserProfile(currentStoredProfile);
+    }
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [setUserProfile, userProfile]); // Added userProfile to dependency array if needed by currentStoredProfile comparison logic
 
   const processImageDataUrl = async (dataUrl: string, currentScanType: ScanType) => {
     setIsLoading(true);

@@ -133,6 +133,7 @@ export default {
     selectYourAllergensTitle: 'Select Your Allergens',
     yourSelectedAllergensTitle: 'Your Selected Allergens',
     removeAllergenAriaLabel: 'Remove {allergenName}',
+    searchAllergenPlaceholder: 'Search allergens (e.g., peanut, milk)...',
   },
 
   // HistoryPage & ScanHistoryList Component
