@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { CameraView } from '@/components/mobile/camera-view';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Utensils, List, Loader2 } from 'lucide-react';
+import { Utensils, List, Loader2, History, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCurrentLocale, useI18n } from '@/lib/i18n/client';
 import { analyzeFoodImage, analyzeIngredientsListImage, type AllergenAnalysisResult } from '@/app/[locale]/actions';
@@ -268,6 +268,33 @@ export default function MobilePage() {
                 {scanMode === 'food' ? '🍎 食品扫描模式' : '📋 配料表扫描模式'}
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 左上角按钮 - 只在没有结果时显示 */}
+      {!analysisResult && (
+        <div className="absolute top-4 left-4 z-10 scale-80">
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/${currentLocale}/m/history`)}
+              className="bg-black/50 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px]"
+            >
+              <History className="h-4 w-4" />
+              <span className="text-xs">历史</span>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push(`/${currentLocale}/m/profile`)}
+              className="bg-black/50 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px]"
+            >
+              <User className="h-4 w-4" />
+              <span className="text-xs">我的</span>
+            </Button>
           </div>
         </div>
       )}
