@@ -324,4 +324,84 @@ export default {
     historyClearedDescription: "所有掃描歷史記錄已成功刪除。",
     loadingHistory: "正在載入掃描歷史..."
   },
+
+  // Mobile specific translations
+  mobile: {
+    // Loading and analysis
+    analyzingFood: "正在分析食品...",
+    analyzingIngredients: "正在分析成分表...",
+    pleaseWait: "請稍等，這可能需要幾秒鐘",
+    analysisResult: "分析結果",
+    scanAgain: "重新掃描",
+    viewHistory: "檢視歷史",
+    
+    // Scan modes and descriptions
+    foodScanDesc: "識別整個食品包裝，獲取基本資訊",
+    ingredientsScanDesc: "識別成分表文字，詳細分析成分",
+    scanFood: "掃食品",
+    scanIngredients: "掃成分表",
+    default: "預設",
+    active: "作用中",
+    foodScanMode: "食品掃描模式",
+    ingredientsScanMode: "成分表掃描模式",
+    
+    // Navigation buttons
+    history: "歷史",
+    profile: "我的",
+    
+    // Authentication related
+    loginRequired: "需要登入",
+    loginRequiredDesc: "請登入後檢視您的掃描歷史記錄",
+    loginNow: "立即登入",
+    welcomeToAllergenDetection: "歡迎使用過敏原檢測",
+    loginBenefits: "登入後可以儲存掃描歷史、管理過敏原設定，享受更完整的功能體驗",
+    registerAccount: "註冊帳號",
+    
+    // History page
+    scanHistory: "掃描歷史",
+    clear: "清空",
+    confirmClearHistory: "確認清空歷史記錄",
+    clearHistoryWarning: "此操作將刪除所有掃描歷史記錄，且無法復原。您確定要繼續嗎？",
+    confirmClear: "確認清空",
+    
+    // Profile page - user info
+    user: "使用者",
+    userId: "使用者ID",
+    unknown: "未知",
+    myAllergens: "我的過敏原",
+    editAllergenSettings: "編輯過敏原設定",
+    noAllergenInfo: "暫未設定過敏原資訊",
+    setupNow: "立即設定",
+    
+    // Profile page - menu items
+    personalProfile: "個人資料",
+    manageAllergenAndAccount: "管理過敏原和帳戶資訊",
+    appSettings: "應用程式設定",
+    privacyNotificationSettings: "隱私、通知和其他設定",
+    desktopVersion: "電腦版",
+    switchToDesktop: "切換到電腦版",
+    switchToDesktopDesc: "切換到桌面版本",
+    viewHistoryDesc: "檢視歷史掃描記錄",
+    logout: "登出",
+    logoutDesc: "安全登出當前帳戶",
+    
+    // History page specific
+    loadingHistory: "正在載入歷史記錄...",
+    loadingFailed: "載入失敗",
+    retry: "重試",
+    noScanRecords: "暫無掃描記錄",
+    startFirstScan: "開始您的第一次食品安全掃描吧",
+    startScanning: "開始掃描",
+    scannedImage: "掃描圖片",
+    foodScan: "食品掃描",
+    ingredientsScan: "成分表掃描",
+    containsYourAllergens: "包含您的過敏原",
+    noAllergensDetected: "未檢測到過敏原",
+    viewDetails: "檢視詳情",
+    confirmDelete: "確認刪除",
+    confirmDeleteDesc: "確定要刪除這條掃描記錄嗎？此操作無法撤銷。",
+    deleteAction: "刪除",
+    foodScanDetails: "食品掃描詳情",
+    ingredientsScanDetails: "成分表掃描詳情",
+  },
 };

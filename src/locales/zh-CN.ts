@@ -324,4 +324,84 @@ export default {
     historyClearedDescription: "所有扫描历史记录已成功删除。",
     loadingHistory: "正在加载扫描历史..."
   },
+
+  // Mobile specific translations
+  mobile: {
+    // Loading and analysis
+    analyzingFood: "正在分析食品...",
+    analyzingIngredients: "正在分析配料表...",
+    pleaseWait: "请稍等，这可能需要几秒钟",
+    analysisResult: "分析结果",
+    scanAgain: "重新扫描",
+    viewHistory: "查看历史",
+    
+    // Scan modes and descriptions
+    foodScanDesc: "识别整个食品包装，获取基本信息",
+    ingredientsScanDesc: "识别配料表文字，详细分析成分",
+    scanFood: "扫食品",
+    scanIngredients: "扫配料表",
+    default: "默认",
+    active: "活跃",
+    foodScanMode: "食品扫描模式",
+    ingredientsScanMode: "配料表扫描模式",
+    
+    // Navigation buttons
+    history: "历史",
+    profile: "我的",
+    
+    // Authentication related
+    loginRequired: "需要登录",
+    loginRequiredDesc: "请登录后查看您的扫描历史记录",
+    loginNow: "立即登录",
+    welcomeToAllergenDetection: "欢迎使用过敏原检测",
+    loginBenefits: "登录后可以保存扫描历史、管理过敏原设置，享受更完整的功能体验",
+    registerAccount: "注册账号",
+    
+    // History page
+    scanHistory: "扫描历史",
+    clear: "清空",
+    confirmClearHistory: "确认清空历史记录",
+    clearHistoryWarning: "此操作将删除所有扫描历史记录，且无法恢复。您确定要继续吗？",
+    confirmClear: "确认清空",
+    
+    // Profile page - user info
+    user: "用户",
+    userId: "用户ID",
+    unknown: "未知",
+    myAllergens: "我的过敏原",
+    editAllergenSettings: "编辑过敏原设置",
+    noAllergenInfo: "暂未设置过敏原信息",
+    setupNow: "立即设置",
+    
+    // Profile page - menu items
+    personalProfile: "个人资料",
+    manageAllergenAndAccount: "管理过敏原和账户信息",
+    appSettings: "应用设置",
+    privacyNotificationSettings: "隐私、通知和其他设置",
+    desktopVersion: "电脑版",
+    switchToDesktop: "切换到电脑版",
+    switchToDesktopDesc: "切换到桌面版本",
+    viewHistoryDesc: "查看历史扫描记录",
+    logout: "退出登录",
+    logoutDesc: "安全退出当前账户",
+    
+    // History page specific
+    loadingHistory: "正在加载历史记录...",
+    loadingFailed: "加载失败",
+    retry: "重试",
+    noScanRecords: "暂无扫描记录",
+    startFirstScan: "开始您的第一次食品安全扫描吧",
+    startScanning: "开始扫描",
+    scannedImage: "扫描图片",
+    foodScan: "食品扫描",
+    ingredientsScan: "配料表扫描",
+    containsYourAllergens: "包含您的过敏原",
+    noAllergensDetected: "未检测到过敏原",
+    viewDetails: "查看详情",
+    confirmDelete: "确认删除",
+    confirmDeleteDesc: "确定要删除这条扫描记录吗？此操作无法撤销。",
+    deleteAction: "删除",
+    foodScanDetails: "食品扫描详情",
+    ingredientsScanDetails: "配料表扫描详情",
+  },
 };

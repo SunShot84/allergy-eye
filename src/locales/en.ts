@@ -321,4 +321,84 @@ export default {
     historyClearedDescription: "All scan history items have been successfully deleted.",
     loadingHistory: "Loading scan history..."
   },
+
+  // Mobile specific translations
+  mobile: {
+    // Loading and analysis
+    analyzingFood: "Analyzing food...",
+    analyzingIngredients: "Analyzing ingredients...",
+    pleaseWait: "Please wait, this may take a few seconds",
+    analysisResult: "Analysis Result",
+    scanAgain: "Scan Again",
+    viewHistory: "View History",
+    
+    // Scan modes and descriptions
+    foodScanDesc: "Identify entire food packaging for basic information",
+    ingredientsScanDesc: "Identify ingredients text for detailed analysis",
+    scanFood: "Food",
+    scanIngredients: "Ingredients",
+    default: "Default",
+    active: "Active",
+    foodScanMode: "Food Scan Mode",
+    ingredientsScanMode: "Ingredients Scan Mode",
+    
+    // Navigation buttons
+    history: "History",
+    profile: "Profile",
+    
+    // Authentication related
+    loginRequired: "Login Required",
+    loginRequiredDesc: "Please log in to view your scan history",
+    loginNow: "Login Now",
+    welcomeToAllergenDetection: "Welcome to Allergen Detection",
+    loginBenefits: "Login to save scan history, manage allergen settings, and enjoy a complete experience",
+    registerAccount: "Register Account",
+    
+    // History page
+    scanHistory: "Scan History",
+    clear: "Clear",
+    confirmClearHistory: "Confirm Clear History",
+    clearHistoryWarning: "This action will delete all scan history records and cannot be undone. Are you sure you want to continue?",
+    confirmClear: "Confirm Clear",
+    
+    // Profile page - user info
+    user: "User",
+    userId: "User ID",
+    unknown: "Unknown",
+    myAllergens: "My Allergens",
+    editAllergenSettings: "Edit Allergen Settings",
+    noAllergenInfo: "No allergen information set yet",
+    setupNow: "Setup Now",
+    
+    // Profile page - menu items
+    personalProfile: "Personal Profile",
+    manageAllergenAndAccount: "Manage allergens and account information",
+    appSettings: "App Settings",
+    privacyNotificationSettings: "Privacy, notification and other settings",
+    desktopVersion: "Desktop Version",
+    switchToDesktop: "Switch to Desktop",
+    switchToDesktopDesc: "Switch to desktop version",
+    viewHistoryDesc: "View historical scan records",
+    logout: "Logout",
+    logoutDesc: "Safely logout current account",
+    
+    // History page specific
+    loadingHistory: "Loading history...",
+    loadingFailed: "Loading Failed",
+    retry: "Retry",
+    noScanRecords: "No Scan Records",
+    startFirstScan: "Start your first food safety scan",
+    startScanning: "Start Scanning",
+    scannedImage: "Scanned Image",
+    foodScan: "Food Scan",
+    ingredientsScan: "Ingredients Scan",
+    containsYourAllergens: "Contains your allergens",
+    noAllergensDetected: "No allergens detected",
+    viewDetails: "View Details",
+    confirmDelete: "Confirm Delete",
+    confirmDeleteDesc: "Are you sure you want to delete this scan record? This action cannot be undone.",
+    deleteAction: "Delete",
+    foodScanDetails: "Food Scan Details",
+    ingredientsScanDetails: "Ingredients Scan Details",
+  },
 };

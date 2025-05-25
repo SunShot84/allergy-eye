@@ -125,7 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setToken(null);
         if (response.status !== 401) { 
             const errorData = await response.json();
-            const message = errorData.message || t('auth.sessionVerificationFailed');
+            const message = errorData.message || t('error.unknown');
             setError(message);
         }
       }
@@ -173,7 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // router.push(`/${currentLocale}/`); // Redirect handled by login page typically
       });
     } catch (e: any) {
-      console.error('Login failed catch block:', e.message);
+      console.error('Login failed catch block:', e?.message || e);
     }
   };
 
@@ -191,7 +191,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // router.push(`/${currentLocale}/login`); // Redirect handled by register page typically
       });
     } catch (e: any) {
-      console.error('Registration failed catch block:', e.message);
+      console.error('Registration failed catch block:', e?.message || e);
     }
   };
 
@@ -211,8 +211,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
       }
     } catch (e: any) {
-      console.error('Logout API call failed:', e.message);
-      setError(t('auth.logoutFailedServer')); 
+      console.error('Logout API call failed:', e?.message || e);
+      setError(t('error.general')); 
     } finally {
       localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
       // localStorage.removeItem(ALLERGY_PROFILE_STORAGE_KEY); // No longer needed here

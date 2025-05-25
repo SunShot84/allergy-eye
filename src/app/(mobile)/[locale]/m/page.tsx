@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { CameraView } from '@/components/mobile/camera-view';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Utensils, List, Loader2, History, User } from 'lucide-react';
+import { Utensils, List, Loader2, History, User, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCurrentLocale, useI18n } from '@/lib/i18n/client';
 import { analyzeFoodImage, analyzeIngredientsListImage, type AllergenAnalysisResult } from '@/app/[locale]/actions';
@@ -149,14 +149,14 @@ export default function MobilePage() {
       
       {/* 加载遮罩 */}
       {isLoading && (
-        <div className="absolute inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100]">
           <div className="text-center text-white">
             <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" />
             <p className="text-lg font-medium">
-              {scanMode === 'food' ? '正在分析食品...' : '正在分析配料表...'}
+              {scanMode === 'food' ? t('mobile.analyzingFood') : t('mobile.analyzingIngredients')}
             </p>
             <p className="text-sm opacity-75 mt-2">
-              请稍等，这可能需要几秒钟
+              {t('mobile.pleaseWait')}
             </p>
           </div>
         </div>
@@ -164,57 +164,63 @@ export default function MobilePage() {
 
       {/* 分析结果遮罩 */}
       {analysisResult && (
-        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col z-40 overflow-y-auto">
-          <div className="flex-1 p-4 pt-20">
-            <div className="max-w-lg mx-auto">
-              {/* 关闭按钮 */}
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-white">分析结果</h2>
-                <Button
-                  variant="ghost"
-                  onClick={() => setAnalysisResult(null)}
-                  className="text-white hover:bg-white/20"
-                >
-                  关闭
-                </Button>
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex flex-col z-[200] overflow-hidden">
+          {/* 顶部标题栏 */}
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white">{t('mobile.analysisResult')}</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAnalysisResult(null)}
+              className="text-white text-xl hover:bg-white/20 rounded-full h-10 w-10 p-0"
+            >
+              <X className="size-6" />
+            </Button>
+          </div>
+          
+          {/* 滚动内容区域 */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-4">
+              <div className="max-w-lg mx-auto">
+                {/* 结果组件 */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-xl">
+                  <AllergenResults 
+                    analysisResult={analysisResult}
+                    userProfile={{ knownAllergies: knownAllergies }}
+                  />
+                </div>
               </div>
+            </div>
+          </div>
 
-              {/* 结果组件 */}
-              <div className="bg-white rounded-lg overflow-hidden">
-                <AllergenResults 
-                  analysisResult={analysisResult}
-                  userProfile={{ knownAllergies: knownAllergies }}
-                />
-              </div>
-
-              {/* 重新扫描按钮 */}
-              <div className="mt-6 flex gap-4">
-                <Button
-                  onClick={() => setAnalysisResult(null)}
-                  className="flex-1"
-                  variant="outline"
-                >
-                  重新扫描
-                </Button>
-                <Button
-                  onClick={() => router.push(`/${currentLocale}/m/history`)}
-                  className="flex-1"
-                >
-                  查看历史
-                </Button>
-              </div>
+          {/* 底部操作按钮 */}
+          <div className="p-4 border-t border-white/10">
+            <div className="max-w-lg mx-auto flex gap-3">
+              <Button
+                onClick={() => setAnalysisResult(null)}
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/30"
+                variant="outline"
+              >
+                {t('mobile.scanAgain')}
+              </Button>
+              <Button
+                onClick={() => router.push(`/${currentLocale}/m/history`)}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                {t('mobile.viewHistory')}
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 底部tab - 只在没有结果时显示 */}
+      {/* 底部模式切换 - 只在没有结果时显示 */}
       {!analysisResult && (
-        <div className="absolute bottom-3 left-0 right-0 px-4">
+        <div className="absolute bottom-3 left-0 right-0 px-4 z-30">
           {/* 模式说明 */}
-          <div className="text-center mb-1">
+          <div className="text-center mb-2">
             <p className="text-white text-xs opacity-75">
-              {scanMode === 'food' ? '识别整个食品包装，获取基本信息' : '识别配料表文字，详细分析成分'}
+              {scanMode === 'food' ? t('mobile.foodScanDesc') : t('mobile.ingredientsScanDesc')}
             </p>
           </div>
           <div className="flex items-center justify-center space-x-4 scale-75">
@@ -222,17 +228,17 @@ export default function MobilePage() {
               variant={scanMode === 'food' ? 'default' : 'secondary'}
               onClick={() => handleModeChange('food')}
               disabled={isLoading}
-              className={`flex items-center space-x-2 px-6 text-lg rounded-full ${
+              className={`flex items-center space-x-2 px-6 text-lg rounded-full transition-all ${
                 scanMode === 'food' 
-                  ? 'bg-white text-black shadow-lg font-bold active:bg-white hover:bg-white' 
-                  : 'bg-black/50 text-white border border-white/30'
+                  ? 'bg-white text-black shadow-lg font-bold scale-105 hover:bg-white' 
+                  : 'bg-black/50 text-white border border-white/30 hover:bg-white/10'
               }`}
             >
               <Utensils className="size-5" />
-              <span>扫食品</span>
+              <span>{t('mobile.scanFood')}</span>
               {scanMode === 'food' && (
                 <Badge variant="secondary" className="ml-2 bg-primary text-white">
-                  默认
+                  {t('mobile.default')}
                 </Badge>
               )}
             </Button>
@@ -241,17 +247,17 @@ export default function MobilePage() {
               variant={scanMode === 'ingredients' ? 'default' : 'secondary'}
               onClick={() => handleModeChange('ingredients')}
               disabled={isLoading}
-              className={`flex items-center space-x-2 px-6 text-lg rounded-full ${
+              className={`flex items-center space-x-2 px-6 text-lg rounded-full transition-all ${
                 scanMode === 'ingredients' 
-                  ? 'bg-white text-black shadow-lg font-bold active:bg-white hover:bg-white' 
-                  : 'bg-black/50 text-white border border-white/30'
+                  ? 'bg-white text-black shadow-lg font-bold scale-105 hover:bg-white' 
+                  : 'bg-black/50 text-white border border-white/30 hover:bg-white/10'
               }`}
             >
               <List className="size-5" />
-              <span>扫配料表</span>
+              <span>{t('mobile.scanIngredients')}</span>
               {scanMode === 'ingredients' && (
                 <Badge variant="secondary" className="ml-2 bg-primary text-white">
-                  活跃
+                  {t('mobile.active')}
                 </Badge>
               )}
             </Button>
@@ -261,11 +267,11 @@ export default function MobilePage() {
       
       {/* 顶部模式指示器 - 只在没有结果时显示 */}
       {!analysisResult && (
-        <div className="absolute top-16 left-0 right-0 px-4">
+        <div className="absolute top-16 left-0 right-0 px-4 z-20">
           <div className="flex justify-center">
-            <div className="bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
+            <div className="bg-black/60 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
               <p className="text-white text-sm">
-                {scanMode === 'food' ? '🍎 食品扫描模式' : '📋 配料表扫描模式'}
+                {scanMode === 'food' ? `🍎 ${t('mobile.foodScanMode')}` : `📋 ${t('mobile.ingredientsScanMode')}`}
               </p>
             </div>
           </div>
@@ -274,26 +280,26 @@ export default function MobilePage() {
 
       {/* 左上角按钮 - 只在没有结果时显示 */}
       {!analysisResult && (
-        <div className="absolute top-4 left-4 scale-80 z-[200]">
+        <div className="absolute top-4 left-4 scale-80 z-50">
           <div className="flex flex-col gap-2">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => router.push(`/${currentLocale}/m/history`)}
-              className="bg-black/50 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px]"
+              className="bg-black/60 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px] rounded-lg transition-all"
             >
               <History className="h-4 w-4" />
-              <span className="text-xs">历史</span>
+              <span className="text-xs">{t('mobile.history')}</span>
             </Button>
             
             <Button
               variant="ghost"
               size="sm"
               onClick={() => router.push(`/${currentLocale}/m/profile`)}
-              className="bg-black/50 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px]"
+              className="bg-black/60 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex flex-col items-center gap-1 h-auto p-2 min-w-[48px] rounded-lg transition-all"
             >
               <User className="h-4 w-4" />
-              <span className="text-xs">我的</span>
+              <span className="text-xs">{t('mobile.profile')}</span>
             </Button>
           </div>
         </div>

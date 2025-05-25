@@ -202,12 +202,12 @@ export default function MobileHistoryPage() {
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
             <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-lg font-semibold mb-2">需要登录</h2>
+            <h2 className="text-lg font-semibold mb-2">{t('mobile.loginRequired')}</h2>
             <p className="text-muted-foreground mb-4">
-              请登录后查看您的扫描历史记录
+              {t('mobile.loginRequiredDesc')}
             </p>
             <Button onClick={() => router.push(`/${currentLocale}/login?redirect=${encodeURIComponent(`/${currentLocale}/m/history`)}`)}>
-              立即登录
+              {t('mobile.loginNow')}
             </Button>
           </div>
         </div>
@@ -228,27 +228,27 @@ export default function MobileHistoryPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-lg font-semibold">扫描历史</h1>
+          <h1 className="text-lg font-semibold">{t('mobile.scanHistory')}</h1>
         </div>
         
         {scanHistory.length > 0 && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="sm" className="text-red-600">
-                清空
+                {t('mobile.clear')}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>确认清空历史记录</AlertDialogTitle>
+                <AlertDialogTitle>{t('mobile.confirmClearHistory')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  此操作将删除所有扫描历史记录，且无法恢复。您确定要继续吗？
+                  {t('mobile.clearHistoryWarning')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>取消</AlertDialogCancel>
+                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                 <AlertDialogAction onClick={handleClearHistory} className="bg-red-600 hover:bg-red-700">
-                  确认清空
+                  {t('mobile.confirmClear')}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -262,28 +262,28 @@ export default function MobileHistoryPage() {
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
-              <p className="text-muted-foreground">加载历史记录中...</p>
+              <p className="text-muted-foreground">{t('mobile.loadingHistory')}</p>
             </div>
           </div>
         ) : error ? (
           <div className="flex items-center justify-center h-full p-4">
             <div className="text-center">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h2 className="text-lg font-semibold mb-2">加载失败</h2>
+              <h2 className="text-lg font-semibold mb-2">{t('mobile.loadingFailed')}</h2>
               <p className="text-muted-foreground mb-4">{error}</p>
-              <Button onClick={fetchScanHistory}>重试</Button>
+              <Button onClick={fetchScanHistory}>{t('mobile.retry')}</Button>
             </div>
           </div>
         ) : scanHistory.length === 0 ? (
           <div className="flex items-center justify-center h-full p-4">
             <div className="text-center">
               <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h2 className="text-lg font-semibold mb-2">暂无扫描记录</h2>
+              <h2 className="text-lg font-semibold mb-2">{t('mobile.noScanRecords')}</h2>
               <p className="text-muted-foreground mb-4">
-                开始您的第一次食品安全扫描吧
+                {t('mobile.startFirstScan')}
               </p>
               <Button onClick={() => router.push(`/${currentLocale}/m`)}>
-                开始扫描
+                {t('mobile.startScanning')}
               </Button>
             </div>
           </div>
@@ -298,7 +298,7 @@ export default function MobileHistoryPage() {
                       <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                         <Image
                           src={item.imageDataUrl}
-                          alt="扫描图片"
+                          alt={t('mobile.scannedImage')}
                           fill
                           className="object-cover"
                         />
@@ -314,7 +314,7 @@ export default function MobileHistoryPage() {
                               <ListIcon className="h-4 w-4 text-green-500" />
                             )}
                             <span className="text-sm font-medium">
-                              {item.scanType === 'food' ? '食品扫描' : '配料表扫描'}
+                              {item.scanType === 'food' ? t('mobile.foodScan') : t('mobile.ingredientsScan')}
                             </span>
                           </div>
                           <span className="text-xs text-muted-foreground">
@@ -352,7 +352,7 @@ export default function MobileHistoryPage() {
                               <div className="flex items-center gap-1 mt-1">
                                 <AlertTriangle className="h-3 w-3 text-red-500" />
                                 <span className="text-xs text-red-600 font-medium">
-                                  包含您的过敏原
+                                  {t('mobile.containsYourAllergens')}
                                 </span>
                               </div>
                             )}
@@ -360,7 +360,7 @@ export default function MobileHistoryPage() {
                         ) : (
                           <div className="flex items-center gap-1 mb-2">
                             <CheckCircle className="h-3 w-3 text-green-500" />
-                            <span className="text-xs text-green-600">未检测到过敏原</span>
+                            <span className="text-xs text-green-600">{t('mobile.noAllergensDetected')}</span>
                           </div>
                         )}
 
@@ -373,7 +373,7 @@ export default function MobileHistoryPage() {
                             className="flex-1 text-xs h-8"
                           >
                             <Eye className="h-3 w-3 mr-1" />
-                            查看详情
+                            {t('mobile.viewDetails')}
                           </Button>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -387,18 +387,18 @@ export default function MobileHistoryPage() {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>确认删除</AlertDialogTitle>
+                                <AlertDialogTitle>{t('mobile.confirmDelete')}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  确定要删除这条扫描记录吗？此操作无法撤销。
+                                  {t('mobile.confirmDeleteDesc')}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>取消</AlertDialogCancel>
+                                <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                                 <AlertDialogAction 
                                   onClick={() => handleDeleteItem(item.id)}
                                   className="bg-red-600 hover:bg-red-700"
                                 >
-                                  删除
+                                  {t('mobile.deleteAction')}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -420,7 +420,7 @@ export default function MobileHistoryPage() {
           <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] h-[90vh] flex flex-col p-0">
             <DialogHeader className="p-4 pb-2">
               <DialogTitle className="text-lg">
-                {selectedItem.scanType === 'food' ? '食品扫描详情' : '配料表扫描详情'}
+                {selectedItem.scanType === 'food' ? t('mobile.foodScanDetails') : t('mobile.ingredientsScanDetails')}
               </DialogTitle>
               <DialogDescription className="text-sm">
                 {formatTimestamp(selectedItem.timestamp, currentLocale)}
@@ -433,7 +433,7 @@ export default function MobileHistoryPage() {
                 <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src={selectedItem.imageDataUrl}
-                    alt="扫描图片"
+                    alt={t('mobile.scannedImage')}
                     fill
                     className="object-contain"
                   />

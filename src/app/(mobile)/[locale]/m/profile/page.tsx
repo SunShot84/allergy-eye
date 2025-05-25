@@ -59,9 +59,9 @@ export default function MobileProfilePage() {
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="h-10 w-10 text-gray-400" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">欢迎使用过敏原检测</h2>
+            <h2 className="text-xl font-semibold mb-2">{t('mobile.welcomeToAllergenDetection')}</h2>
             <p className="text-muted-foreground mb-6">
-              登录后可以保存扫描历史、管理过敏原设置，享受更完整的功能体验
+              {t('mobile.loginBenefits')}
             </p>
             <div className="space-y-3">
               <Button 
@@ -69,14 +69,14 @@ export default function MobileProfilePage() {
                 className="w-full"
               >
                 <LogIn className="h-4 w-4 mr-2" />
-                立即登录
+                {t('mobile.loginNow')}
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => router.push(`/${currentLocale}/register?redirect=${encodeURIComponent(`/${currentLocale}/m/profile`)}`)}
                 className="w-full"
               >
-                注册账号
+                {t('mobile.registerAccount')}
               </Button>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function MobileProfilePage() {
                   className="w-full justify-start"
                 >
                   <Monitor className="h-4 w-4 mr-3" />
-                  切换到电脑版
+                  {t('mobile.switchToDesktop')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -101,7 +101,7 @@ export default function MobileProfilePage() {
                   className="w-full justify-start"
                 >
                   <Settings className="h-4 w-4 mr-3" />
-                  设置
+                  {t('settings.title')}
                 </Button>
               </div>
             </CardContent>
@@ -125,9 +125,9 @@ export default function MobileProfilePage() {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <h2 className="text-xl font-semibold">{user?.username || '用户'}</h2>
+                <h2 className="text-xl font-semibold">{user?.username || t('mobile.user')}</h2>
                 <p className="text-sm text-muted-foreground">
-                  用户ID: {user?.id || '未知'}
+                  {t('mobile.userId')}: {user?.id || t('mobile.unknown')}
                 </p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function MobileProfilePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              我的过敏原
+              {t('mobile.myAllergens')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -161,19 +161,19 @@ export default function MobileProfilePage() {
                   onClick={() => router.push(`/${currentLocale}/profile`)}
                   className="w-full"
                 >
-                  编辑过敏原设置
+                  {t('mobile.editAllergenSettings')}
                 </Button>
               </div>
             ) : (
               <div className="text-center py-4">
                 <p className="text-muted-foreground mb-3">
-                  暂未设置过敏原信息
+                  {t('mobile.noAllergenInfo')}
                 </p>
                 <Button
                   variant="outline"
                   onClick={() => router.push(`/${currentLocale}/profile`)}
                 >
-                  立即设置
+                  {t('mobile.setupNow')}
                 </Button>
               </div>
             )}
@@ -192,8 +192,8 @@ export default function MobileProfilePage() {
                 >
                   <Shield className="h-5 w-5 mr-3" />
                   <div className="text-left">
-                    <div className="font-medium">扫描历史</div>
-                    <div className="text-xs text-muted-foreground">查看历史扫描记录</div>
+                    <div className="font-medium">{t('mobile.scanHistory')}</div>
+                    <div className="text-xs text-muted-foreground">{t('mobile.viewHistoryDesc')}</div>
                   </div>
                 </Button>
                 
@@ -204,8 +204,8 @@ export default function MobileProfilePage() {
                 >
                   <User className="h-5 w-5 mr-3" />
                   <div className="text-left">
-                    <div className="font-medium">个人资料</div>
-                    <div className="text-xs text-muted-foreground">管理过敏原和账户信息</div>
+                    <div className="font-medium">{t('mobile.personalProfile')}</div>
+                    <div className="text-xs text-muted-foreground">{t('mobile.manageAllergenAndAccount')}</div>
                   </div>
                 </Button>
 
@@ -216,8 +216,8 @@ export default function MobileProfilePage() {
                 >
                   <Settings className="h-5 w-5 mr-3" />
                   <div className="text-left">
-                    <div className="font-medium">应用设置</div>
-                    <div className="text-xs text-muted-foreground">隐私、通知和其他设置</div>
+                    <div className="font-medium">{t('mobile.appSettings')}</div>
+                    <div className="text-xs text-muted-foreground">{t('mobile.privacyNotificationSettings')}</div>
                   </div>
                 </Button>
 
@@ -228,8 +228,8 @@ export default function MobileProfilePage() {
                 >
                   <Monitor className="h-5 w-5 mr-3" />
                   <div className="text-left">
-                    <div className="font-medium">电脑版</div>
-                    <div className="text-xs text-muted-foreground">切换到桌面版本</div>
+                    <div className="font-medium">{t('mobile.desktopVersion')}</div>
+                    <div className="text-xs text-muted-foreground">{t('mobile.switchToDesktopDesc')}</div>
                   </div>
                 </Button>
               </div>
@@ -246,8 +246,8 @@ export default function MobileProfilePage() {
               >
                 <LogOut className="h-5 w-5 mr-3" />
                 <div className="text-left">
-                  <div className="font-medium">退出登录</div>
-                  <div className="text-xs opacity-75">安全退出当前账户</div>
+                  <div className="font-medium">{t('mobile.logout')}</div>
+                  <div className="text-xs opacity-75">{t('mobile.logoutDesc')}</div>
                 </div>
               </Button>
             </CardContent>
