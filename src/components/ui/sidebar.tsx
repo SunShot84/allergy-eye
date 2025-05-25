@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -206,6 +207,11 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
+            <SheetHeader>
+              <VisuallyHidden>
+                <SheetTitle>Sidebar Navigation</SheetTitle>
+              </VisuallyHidden>
+            </SheetHeader>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
@@ -519,12 +525,12 @@ const sidebarMenuButtonVariants = cva(
         default: 
           // hover 用 zinc-800/30，保持文字原色；active 才用 accent
           "hover:bg-zinc-800/30 hover:text-sidebar-foreground " +
-          "active:bg-sidebar-accent active:text-sidebar-accent-foreground " +
+          "active:bg-black/15 " +
           "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
         outline:
           // outline 也同理，只改 hover
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] " +
-          "hover:bg-zinc-800/30 hover:text-sidebar-foreground focus-visible:ring-2 " +
+          "hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 " +
           "active:bg-sidebar-accent active:text-sidebar-accent-foreground",
       },
       size: {

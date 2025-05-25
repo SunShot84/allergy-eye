@@ -101,7 +101,12 @@ const openai = new OpenAI({
 export async function analyzeFoodImage(
   photoDataUri: string,
   userKnownAllergiesArray: string[], // Now expects array of allergen IDs
-  currentLocale: 'en' | 'zh-CN' | 'zh-TW'
+  currentLocale: 'en' | 'zh-CN' | 'zh-TW',
+  ipLocation?: { // 添加可选的位置信息参数
+    country: string;
+    region?: string;
+    city?: string;
+  }
 ): Promise<AllergenAnalysisResult> {
   if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "YOUR_OPENAI_API_KEY_HERE") {
     const errorMessage = "OpenAI API key is not configured or is still the placeholder. Please update your .env file with your actual OpenAI API key.";
@@ -120,7 +125,20 @@ export async function analyzeFoodImage(
     const jsonStructureInstruction = t('aiPrompt.jsonStructure');
     const userAllergyContextInstruction = t('aiPrompt.userAllergyContext');
 
-    const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction}`;
+    // 构建位置信息提示
+    let locationContext = '';
+    if (ipLocation) {
+      const locationParts = [];
+      if (ipLocation.city) locationParts.push(ipLocation.city);
+      if (ipLocation.region) locationParts.push(ipLocation.region);
+      if (ipLocation.country) locationParts.push(ipLocation.country);
+      if (locationParts.length > 0) {
+        const location = locationParts.join(', ');
+        locationContext = t('aiPrompt.locationContext').replace('{location}', location);
+      }
+    }
+
+    const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction} ${locationContext}`;
     const userPromptText = t('aiPrompt.identifyRequest');
 
     const response = await openai.chat.completions.create({
@@ -205,7 +223,12 @@ export async function analyzeFoodImage(
 export async function analyzeIngredientsListImage(
   photoDataUri: string,
   userKnownAllergiesArray: string[], // Now expects array of allergen IDs
-  currentLocale: 'en' | 'zh-CN' | 'zh-TW'
+  currentLocale: 'en' | 'zh-CN' | 'zh-TW',
+  ipLocation?: { // 添加可选的位置信息参数
+    country: string;
+    region?: string;
+    city?: string;
+  }
 ): Promise<AllergenAnalysisResult> {
   if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "YOUR_OPENAI_API_KEY_HERE") {
     const errorMessage = "OpenAI API key is not configured or is still the placeholder. Please update your .env file with your actual OpenAI API key.";
@@ -221,9 +244,24 @@ export async function analyzeIngredientsListImage(
     let identifiedAllergens: AllergenInfo[] = [];
     let extractedTextResult: string = "";
 
-        const systemPromptInstruction = t('aiPrompt.ingredientsSystemInstruction');    const jsonStructureInstruction = t('aiPrompt.ingredientsJsonStructure');    const userAllergyContextInstruction = t('aiPrompt.ingredientsUserAllergyContext');
+    const systemPromptInstruction = t('aiPrompt.ingredientsSystemInstruction');
+    const jsonStructureInstruction = t('aiPrompt.ingredientsJsonStructure');
+    const userAllergyContextInstruction = t('aiPrompt.ingredientsUserAllergyContext');
 
-    const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction}`;
+    // 构建位置信息提示
+    let locationContext = '';
+    if (ipLocation) {
+      const locationParts = [];
+      if (ipLocation.city) locationParts.push(ipLocation.city);
+      if (ipLocation.region) locationParts.push(ipLocation.region);
+      if (ipLocation.country) locationParts.push(ipLocation.country);
+      if (locationParts.length > 0) {
+        const location = locationParts.join(', ');
+        locationContext = t('aiPrompt.locationContext').replace('{location}', location);
+      }
+    }
+
+    const systemPrompt = `${systemPromptInstruction} ${jsonStructureInstruction} ${userAllergyContextInstruction} ${locationContext}`;
     const userPromptText = t('aiPrompt.ingredientsIdentifyRequest');
 
     const response = await openai.chat.completions.create({

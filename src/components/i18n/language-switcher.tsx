@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useChangeLocale, useCurrentLocale, useI18n } from '@/lib/i18n/client';
@@ -13,6 +12,7 @@ import { Globe } from 'lucide-react';
 import { useTransition, useEffect } from 'react';
 import { useLoading } from '@/contexts/loading-context';
 import { cn } from '@/lib/utils';
+import { useRouter, usePathname } from 'next/navigation';
 
 export function LanguageSwitcher() {
   const changeLocale = useChangeLocale();
@@ -20,6 +20,8 @@ export function LanguageSwitcher() {
   const t = useI18n();
   const [isPending, startTransition] = useTransition();
   const { setIsLoading } = useLoading();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const locales = [
     { value: 'en', label: t('languageSwitcher.en') },
@@ -27,11 +29,28 @@ export function LanguageSwitcher() {
     { value: 'zh-TW', label: t('languageSwitcher.zhTW') },
   ];
 
-  const handleLocaleChange = (newLocale: 'en' | 'zh-CN' | 'zh-TW') => {
+  const handleLocaleChange = async (newLocale: 'en' | 'zh-CN' | 'zh-TW') => {
     setIsLoading(true);
-    startTransition(() => {
-      changeLocale(newLocale);
-    });
+    try {
+      // 先更新语言设置
+      await changeLocale(newLocale);
+      
+      // 然后处理路径
+      const pathParts = pathname.split('/');
+      if (pathParts[1] && locales.some(locale => locale.value === pathParts[1])) {
+        pathParts[1] = newLocale;
+      } else {
+        pathParts.splice(1, 0, newLocale);
+      }
+      const newPath = pathParts.join('/') || `/${newLocale}`;
+      
+      // 最后导航到新路径
+      router.push(newPath);
+    } catch (error) {
+      console.error('Error changing locale:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

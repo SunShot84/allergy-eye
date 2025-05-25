@@ -43,3 +43,9 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Local data storage (e.g., SQLite databases)
+/data/
+usersData.db
+*.sqlite
+*.sqlite3

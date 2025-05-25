@@ -9,7 +9,6 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import type { UserProfile } from '@/lib/types';
-import { saveUserProfile } from '@/lib/profile-storage';
 import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getAllergenById } from '@/lib/allergens';
@@ -17,7 +16,6 @@ import { getAllergenById } from '@/lib/allergens';
 interface AllergenResultsProps {
   analysisResult: AllergenAnalysisResult | null;
   userProfile: UserProfile;
-  setUserProfile?: (value: UserProfile | ((val: UserProfile) => UserProfile)) => void;
 }
 
 // Helper function to get allergen display name based on locale
@@ -32,7 +30,7 @@ const getAllergenDisplayName = (allergenId: string, locale: string): string => {
   return allergen.id;
 };
 
-export function AllergenResults({ analysisResult, userProfile, setUserProfile }: AllergenResultsProps) {
+export function AllergenResults({ analysisResult, userProfile }: AllergenResultsProps) {
   const t = useI18n();
   const currentLocale = useCurrentLocale();
   const { toast } = useToast();
@@ -46,33 +44,6 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
   }
 
   const { identifiedAllergens, prioritizedAllergens, extractedText } = analysisResult;
-
-  const handleAddAllergenToProfile = (allergenId: string) => {
-    if (!setUserProfile) return; 
-
-    // Check if allergen ID is already in user's profile
-    if (userProfile && userProfile.knownAllergies && !userProfile.knownAllergies.includes(allergenId)) {
-      const updatedProfile: UserProfile = {
-        ...userProfile,
-        knownAllergies: [...userProfile.knownAllergies, allergenId].sort(),
-      };
-      setUserProfile(updatedProfile);
-      saveUserProfile(updatedProfile);
-      
-      const allergenDisplayName = getAllergenDisplayName(allergenId, currentLocale);
-      toast({
-        title: t('profile.allergyAddedTitle'),
-        description: t('profile.allergyAddedDesc'),
-      });
-    } else if (userProfile && userProfile.knownAllergies && userProfile.knownAllergies.includes(allergenId)) {
-      const allergenDisplayName = getAllergenDisplayName(allergenId, currentLocale);
-      toast({
-        variant: "default",
-        title: t('profile.allergyAlreadyAdded'),
-        description: t('profile.allergyAlreadyAddedDesc'),
-      });
-    }
-  };
 
   if (identifiedAllergens.length === 0 && !extractedText) {
     return (
@@ -200,7 +171,9 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
                    <p className="text-xs text-muted-foreground mt-1">{t('allergenResults.lowConfidenceInfo')}</p>
                 )}
 
-                {setUserProfile && !isUserKnownAllergy && (
+                {/* {setUserProfile && !isUserKnownAllergy && ( */}
+                {/* The button below is now commented out as setUserProfile is not passed */}
+                {/*
                   <Button
                     variant="outline"
                     size="sm"
@@ -210,7 +183,7 @@ export function AllergenResults({ analysisResult, userProfile, setUserProfile }:
                     <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
                     {t('allergenResults.addToProfile')}
                   </Button>
-                )}
+                */}
               </li>
             );
           })}

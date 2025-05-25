@@ -1,22 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useId, useMemo } from 'react';
+import React, { useState, useEffect, useId, useMemo, useCallback } from 'react';
 import Fuse from 'fuse.js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { X, Loader2, Upload, CheckCircle, Circle } from 'lucide-react';
+import { X, Loader2, Upload, CheckCircle, Circle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 import { analyzeAllergyReportImage } from '@/app/[locale]/actions';
-import { UserProfile, saveUserProfile, loadUserProfile } from '@/lib/profile-storage';
 import { getAllAllergens, getAllergenById, findAllergenIdsByKeyword, Allergen, AllergenName } from '@/lib/allergens';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
+import { useAuth } from '@/contexts/AuthContext';
+
+interface UserProfile {
+  knownAllergies: string[];
+}
 
 interface ProfileFormProps {
-  initialAllergies: string[];
 }
 
 const getAllergenDisplayName = (allergen: Allergen, locale: string): string => {
@@ -27,24 +30,26 @@ const getAllergenDisplayName = (allergen: Allergen, locale: string): string => {
   return allergen.id;
 };
 
-export function ProfileForm({ initialAllergies }: ProfileFormProps) {
+export function ProfileForm({}: ProfileFormProps) {
   const t = useI18n();
   const currentLocale = useCurrentLocale();
+  const { toast } = useToast();
+  const { token, isAuthenticated } = useAuth();
+
   const [profile, setProfile] = useState<UserProfile>({ knownAllergies: [] });
+  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(true);
+  const [isSavingProfile, setIsSavingProfile] = useState<boolean>(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+
   const [reportFile, setReportFile] = useState<File | null>(null);
   const [isImportingReport, setIsImportingReport] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const { toast } = useToast();
 
   const allAvailableAllergens: Allergen[] = useMemo(() => getAllAllergens(), []);
 
   const fuse = useMemo(() => {
     const options = {
-      keys: [
-        'name.sc',
-        'name.tc',
-        'name.eng'
-      ],
+      keys: ['name.sc', 'name.tc', 'name.eng'],
       includeScore: true,
       threshold: 0.4,
     };
@@ -59,8 +64,66 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
   }, [searchTerm, allAvailableAllergens, fuse]);
 
   useEffect(() => {
-    setProfile(loadUserProfile());
-  }, []);
+    const fetchProfile = async () => {
+      if (!isAuthenticated || !token) {
+        setIsLoadingProfile(false);
+        return;
+      }
+      setIsLoadingProfile(true);
+      setProfileError(null);
+      try {
+        const response = await fetch('/api/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: 'Failed to fetch profile' }));
+          throw new Error(errorData.message || `HTTP error ${response.status}`);
+        }
+        const data: UserProfile = await response.json();
+        setProfile(data);
+      } catch (error: any) {
+        console.error("Failed to fetch profile:", error);
+        setProfileError(error.message || 'Could not load your profile.');
+        toast({ variant: 'destructive', title: t('error.generalTitle'), description: error.message || 'Could not load your profile.' });
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    fetchProfile();
+  }, [token, isAuthenticated, t, toast]);
+
+  const saveProfileToServer = useCallback(async (updatedProfile: UserProfile) => {
+    setIsSavingProfile(true);
+    if (!isAuthenticated || !token) {
+      setIsSavingProfile(false);
+      toast({ variant: 'destructive', title: t('error.generalTitle'), description: t('error.authRequired') });
+      return;
+    }
+    setProfileError(null);
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedProfile),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to save profile' }));
+        throw new Error(errorData.message || `HTTP error ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error("Failed to save profile:", error);
+      setProfileError(error.message || 'Could not save your profile.');
+      toast({ variant: 'destructive', title: t('error.generalTitle'), description: error.message || t('error.saveProfileFailed') });
+    } finally {
+      setIsSavingProfile(false);
+    }
+  }, [token, isAuthenticated, t, toast]);
 
   const handleToggleAllergy = (allergenId: string) => {
     const isCurrentlySelected = profile.knownAllergies.includes(allergenId);
@@ -70,36 +133,14 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
     
     const updatedProfile = { ...profile, knownAllergies: newKnownAllergies };
     setProfile(updatedProfile);
-    saveUserProfile(updatedProfile);
-
-    const allergenInfo = getAllergenById(allergenId);
-    const displayName = allergenInfo ? getAllergenDisplayName(allergenInfo, currentLocale) : allergenId;
-    
-    const titleText = isCurrentlySelected 
-      ? t('profile.allergenRemovedToastTitle', { allergenName: displayName }) 
-      : t('profile.allergenAddedToastTitle', { allergenName: displayName });
-    const descriptionText = isCurrentlySelected 
-      ? t('profile.allergenRemovedToastDesc', { allergenName: displayName }) 
-      : t('profile.allergenAddedToastDesc', { allergenName: displayName });
-
-    toast({
-      title: titleText,
-      description: descriptionText,
-    });
+    saveProfileToServer(updatedProfile);
   };
 
   const handleRemoveAllergy = (allergyIdToRemove: string) => {
     const updatedAllergies = profile.knownAllergies.filter((id: string) => id !== allergyIdToRemove);
     const updatedProfile = { ...profile, knownAllergies: updatedAllergies };
     setProfile(updatedProfile);
-    saveUserProfile(updatedProfile);
-
-    const allergenInfo = getAllergenById(allergyIdToRemove);
-    const displayName = allergenInfo ? getAllergenDisplayName(allergenInfo, currentLocale) : allergyIdToRemove;
-    toast({
-      title: t('profile.allergenRemovedToastTitle', { allergenName: displayName }),
-      description: t('profile.allergenRemovedToastDesc', { allergenName: displayName }),
-    });
+    saveProfileToServer(updatedProfile);
   };
 
   const handleReportFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,7 +183,8 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
         if (addedCount > 0) {
           const updatedProfile = { ...profile, knownAllergies: newKnownAllergiesFromReport };
           setProfile(updatedProfile);
-          saveUserProfile(updatedProfile);
+          await saveProfileToServer(updatedProfile);
+          
           toast({
             title: t('profile.reportImportSuccessTitle'),
             description: t('profile.reportImportSuccessDescWithCount', { count: addedCount, allergenNames: newlyAddedDisplayNames.join(', ') }),
@@ -181,6 +223,38 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
       setIsImportingReport(false);
     };
   };
+  
+  if (isLoadingProfile) {
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="ml-2">{t('profile.loadingProfile')}</p>
+      </div>
+    );
+  }
+
+  if (profileError && !isLoadingProfile) {
+    return (
+      <Card className="w-full max-w-xl mx-auto shadow-lg border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center text-destructive">
+            <AlertCircle className="h-5 w-5 mr-2" />
+            {t('error.generalTitle')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{profileError}</p>
+          <Button onClick={() => {
+            if (token && isAuthenticated) {
+              window.location.reload();
+            }
+          }} className="mt-4">
+            {t('error.retry')}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-xl mx-auto shadow-lg">
@@ -191,7 +265,7 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-6">
+        <div className={`mb-6 transition-opacity duration-300 ${isSavingProfile ? 'opacity-50 pointer-events-none' : ''}`}>
           <h3 className="text-lg font-medium mb-2">{t('profile.selectYourAllergensTitle')}</h3>
           
           <div className="mb-4">
@@ -239,7 +313,7 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
         </div>
 
         {profile.knownAllergies.length > 0 && (
-          <div className="mb-6 pt-4 border-t">
+          <div className={`mb-6 pt-4 border-t transition-opacity duration-300 ${isSavingProfile ? 'opacity-50 pointer-events-none' : ''}`}>
             <h3 className="text-lg font-medium mb-2">{t('profile.yourSelectedAllergensTitle')}</h3>
             <div className="flex flex-wrap gap-2">
               {profile.knownAllergies.map((id, index) => {
@@ -251,7 +325,7 @@ export function ProfileForm({ initialAllergies }: ProfileFormProps) {
                     <button
                       onClick={() => handleRemoveAllergy(id)}
                       className="ml-1.5 text-muted-foreground hover:text-destructive"
-                      aria-label={t('profile.removeAllergenAriaLabel', { allergenName: displayName })}
+                      aria-label={t('profile.removeAllergenAriaLabel')}
                     >
                       <X className="h-3 w-3" />
                     </button>

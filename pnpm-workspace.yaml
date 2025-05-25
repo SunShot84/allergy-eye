@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - '@firebase/util'
+  - better-sqlite3
+  - protobufjs
+  - sharp

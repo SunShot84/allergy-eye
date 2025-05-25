@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 94.1%; /* #F0F0F0 Light Grey */
+    --foreground: 0 0% 13.9%; /* #232323 Dark Grey for text */
+
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 0 0% 13.9%; /* #232323 */
+
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 0 0% 13.9%; /* #232323 */
+
+    --primary: 207 87% 68.2%; /* #64B5F6 Soft Blue */
+    --primary-foreground: 0 0% 100%; /* White */
+
+    --secondary: 207 80% 92%; /* Lighter soft blue for secondary elements */
+    --secondary-foreground: 207 87% 30%; /* Darker soft blue for text on secondary */
+
+    --muted: 0 0% 87.8%; /* #E0E0E0 Lighter grey for muted elements */
+    --muted-foreground: 0 0% 45.1%; /* #737373 */
+
+    --accent: 203 84% 48%; /* #0ea5e9 Blue */
+    --accent-foreground: 0 0% 100%; /* White */
+
+    --destructive: 0 72.2% 50.6%; /* A suitable red for destructive actions */
+    --destructive-foreground: 0 0% 98%; /* White */
+
+    --border: 0 0% 85.1%; /* #D9D9D9 */
+    --input: 0 0% 85.1%; /* #D9D9D9 */
+    --ring: 203 84% 48%; /* Blue for rings, matching new accent */
+
+    --radius: 0.5rem;
+
+    /* Chart colors - can be adjusted if charts are used, otherwise defaults are fine */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Sidebar specific theme adjustments */
+    --sidebar-background: 0 0% 100%; /* White sidebar for clean look */
+    --sidebar-foreground: 0 0% 13.9%; /* Dark Grey text */
+    --sidebar-primary: 207 87% 68.2%; /* Soft Blue */
+    --sidebar-primary-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 203 84% 48%; /* Blue, from main accent */
+    --sidebar-accent-foreground: 0 0% 100%; /* White, from main accent-foreground */
+    --sidebar-border: 0 0% 90.1%; /* #E6E6E6 */
+    --sidebar-ring: 203 84% 48%; /* Blue, from main ring */
+  }
+
+  .dark {
+    /* Dark theme - adapting the light theme colors. User didn't specify dark theme, but good to have basic support. */
+    --background: 0 0% 10%; /* Dark Grey */
+    --foreground: 0 0% 94.1%; /* Light Grey text */
+
+    --card: 0 0% 13.9%; /* #232323 */
+    --card-foreground: 0 0% 94.1%;
+
+    --popover: 0 0% 13.9%;
+    --popover-foreground: 0 0% 94.1%;
+
+    --primary: 207 87% 68.2%; /* Soft Blue */
+    --primary-foreground: 0 0% 10%; /* Dark text on primary for dark mode if needed, or keep white */
+
+    --secondary: 207 80% 20%; /* Darker shade of soft blue */
+    --secondary-foreground: 207 87% 80%; /* Lighter soft blue text */
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65.1%;
+
+    --accent: 203 84% 48%; /* #0ea5e9 Blue */
+    --accent-foreground: 0 0% 100%; /* White */
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 25.1%;
+    --input: 0 0% 25.1%;
+    --ring: 203 84% 48%; /* Blue for rings */
+
+    --sidebar-background: 0 0% 13.9%; /* Dark sidebar */
+    --sidebar-foreground: 0 0% 94.1%;
+    --sidebar-primary: 207 87% 68.2%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 203 84% 48%; /* Blue, from main accent */
+    --sidebar-accent-foreground: 0 0% 100%; /* White, from main accent-foreground */
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 203 84% 48%; /* Blue, from main ring */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+} 

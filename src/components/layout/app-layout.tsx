@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -12,23 +11,27 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar';
-// import { Button } from '@/components/ui/button'; // Not used currently
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { LogoIcon } from '@/components/icons/logo-icon';
 import { SidebarNav } from './sidebar-nav';
 import { Copyright } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/i18n/language-switcher';
-import { useI18n } from '@/lib/i18n/client';
-import { useLoading } from '@/contexts/loading-context'; // Added import
-import { FullScreenLoader } from './full-screen-loader'; // Added import
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
+import { useLoading } from '@/contexts/loading-context';
+import { FullScreenLoader } from './full-screen-loader';
+import { Smartphone } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const t = useI18n();
-  const { isLoading } = useLoading(); // Added hook
+  const currentLocale = useCurrentLocale();
+  const { isLoading } = useLoading();
+  const router = useRouter();
 
   return (
     <SidebarProvider defaultOpen >
-      {isLoading && <FullScreenLoader />} {/* Added loader */}
+      {isLoading && <FullScreenLoader />}
       <Sidebar collapsible="icon">
         <SidebarHeader className="p-4">
           <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
@@ -58,6 +61,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex-1">
             {/* Placeholder for potential breadcrumbs or page title */}
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push(`/${currentLocale}/m`)}
+            className="mr-2"
+          >
+            <Smartphone className="h-5 w-5" />
+            <span className="sr-only">移动版</span>
+          </Button>
           <LanguageSwitcher />
         </header>
         <main className="flex-1 p-4 sm:p-6 md:p-8">
