@@ -274,7 +274,7 @@ export default function MobilePage() {
 
       {/* 左上角按钮 - 只在没有结果时显示 */}
       {!analysisResult && (
-        <div className="absolute top-4 left-4 z-10 scale-80">
+        <div className="absolute top-4 left-4 scale-80 z-[200]">
           <div className="flex flex-col gap-2">
             <Button
               variant="ghost"
