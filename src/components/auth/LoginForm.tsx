@@ -7,13 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { useI18n } from '@/lib/i18n/client';
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 import { useRouter } from 'next/navigation'; // Using next/navigation for App Router
 import { Loader2 } from 'lucide-react';
 
-export function LoginForm() {
+interface LoginFormProps {
+  redirectTo?: string | null;
+}
+
+export function LoginForm({ redirectTo }: LoginFormProps) {
   const t = useI18n();
   const router = useRouter();
+  const currentLocale = useCurrentLocale();
   const { login, isLoading } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -35,17 +40,24 @@ export function LoginForm() {
     try {
       await login({ username, password } /*, captcha */);
       // Login success toast is handled in AuthContext
-      router.push('/'); // Redirect to home or dashboard after login
+      // 如果有redirect参数，跳转到指定URL，否则跳转到首页
+      const targetPath = redirectTo || `/${currentLocale}`;
+      router.push(targetPath);
     } catch (err: any) {
-      setError(err.message || t('auth.loginFailed'));
+      setError(err.message || t('error.loginFailed'));
     }
   };
+
+  // 创建注册链接，保持redirect参数
+  const registerHref = redirectTo 
+    ? `/register?redirect=${encodeURIComponent(redirectTo)}` 
+    : '/register';
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">{t('auth.loginTitle')}</CardTitle>
-        <CardDescription>{t('auth.dontHaveAccount')} <Link href="/register" className="font-medium text-primary hover:underline">{t('auth.signUpLink')}</Link></CardDescription>
+        <CardDescription>{t('auth.dontHaveAccount')} <Link href={registerHref} className="font-medium text-primary hover:underline">{t('auth.signUpLink')}</Link></CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">

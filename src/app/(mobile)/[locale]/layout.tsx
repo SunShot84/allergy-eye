@@ -3,6 +3,7 @@ import { MobileNav } from '@/components/layout/mobile-nav';
 import { I18nProviderClient } from '@/lib/i18n/client';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LoadingProvider } from '@/contexts/loading-context';
+import { SettingsProvider } from '@/contexts/SettingsContext';
 import { Toaster } from "@/components/ui/toaster";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
@@ -42,13 +43,15 @@ export default function MobileLayout({
         <I18nProviderClient locale={params.locale}>
           <LoadingProvider>
             <AuthProvider>
-              <div className="min-h-screen flex flex-col bg-background">
-                <MobileNav locale={params.locale} />
-                <main className="flex-1">
-                  {children}
-                </main>
-              </div>
-              <Toaster />
+              <SettingsProvider>
+                <div className="min-h-screen flex flex-col bg-background">
+                  <MobileNav locale={params.locale} />
+                  <main className="flex-1">
+                    {children}
+                  </main>
+                </div>
+                <Toaster />
+              </SettingsProvider>
             </AuthProvider>
           </LoadingProvider>
         </I18nProviderClient>

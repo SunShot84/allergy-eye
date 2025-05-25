@@ -2,7 +2,7 @@
 
 import { RegisterForm } from '@/components/auth/RegisterForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useCurrentLocale, useI18n } from '@/lib/i18n/client';
 
@@ -12,15 +12,20 @@ export default function RegisterPage() {
   const currentLocale = useCurrentLocale();
   const t = useI18n();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  // 获取redirect参数
+  const redirectTo = searchParams.get('redirect');
 
   useEffect(() => {
     if (isAuthCheckComplete && isAuthenticated) {
-      const targetPath = `/${currentLocale}`;
+      // 如果有redirect参数，跳转到指定URL，否则跳转到默认首页
+      const targetPath = redirectTo || `/${currentLocale}`;
       if (pathname !== targetPath) {
         router.replace(targetPath);
       }
     }
-  }, [isAuthenticated, isAuthCheckComplete, router, currentLocale, pathname]);
+  }, [isAuthenticated, isAuthCheckComplete, router, currentLocale, pathname, redirectTo]);
 
   if (!isAuthCheckComplete || (isAuthCheckComplete && isAuthenticated)) {
     return (
@@ -32,7 +37,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center px-4">
-      <RegisterForm />
+      <RegisterForm redirectTo={redirectTo} />
     </div>
   );
 } 

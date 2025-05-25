@@ -7,13 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { useI18n } from '@/lib/i18n/client';
+import { useI18n, useCurrentLocale } from '@/lib/i18n/client';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
-export function RegisterForm() {
+interface RegisterFormProps {
+  redirectTo?: string | null;
+}
+
+export function RegisterForm({ redirectTo }: RegisterFormProps) {
   const t = useI18n();
   const router = useRouter();
+  const currentLocale = useCurrentLocale();
   const { register, isLoading } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,18 +45,26 @@ export function RegisterForm() {
     try {
       await register({ username, password } /*, captcha */);
       // Success toast is handled in AuthContext or by the register function itself.
-      // Potentially redirect to login page or show a message to check email for verification if implemented.
-      router.push('/login'); 
+      // 注册成功后跳转到登录页面，保持redirect参数
+      const loginPath = redirectTo 
+        ? `/login?redirect=${encodeURIComponent(redirectTo)}` 
+        : '/login';
+      router.push(loginPath);
     } catch (err: any) {
-      setError(err.message || t('auth.registrationFailed'));
+      setError(err.message || t('error.registrationFailed'));
     }
   };
+
+  // 创建登录链接，保持redirect参数
+  const loginHref = redirectTo 
+    ? `/login?redirect=${encodeURIComponent(redirectTo)}` 
+    : '/login';
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">{t('auth.registerTitle')}</CardTitle>
-        <CardDescription>{t('auth.alreadyHaveAccount')} <Link href="/login" className="font-medium text-primary hover:underline">{t('auth.signInLink')}</Link></CardDescription>
+        <CardDescription>{t('auth.alreadyHaveAccount')} <Link href={loginHref} className="font-medium text-primary hover:underline">{t('auth.signInLink')}</Link></CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
