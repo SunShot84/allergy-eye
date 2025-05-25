@@ -21,6 +21,15 @@ AllergyEye 是一款为易过敏人群，利用<b>视觉大模型</b>与<b>过�
 -   **图标**: [Lucide React](https://lucide.dev/)
 -   **字体**: Geist Sans, Geist Mono
 
+## 重构计划
+
+- **前端框架**：[Next.js](https://nextjs.org/) (使用 App Router)
+- **UI 库**: [React](https://reactjs.org/)
+- **UI 组件**: [Radix UI](https://www.radix-ui.com/)
+- **样式**: [UnoCSS](https://unocss.dev/)
+- **AI 集成**：[Coze](https://www.coze.com/)、[Open AI](https://www.openai.com/)
+- **数据管理**: `sqlite`
+
 ## 环境准备
 
 在开始之前，请确保您的开发环境中安装了以下软件：
